@@ -1,0 +1,11 @@
+{
+  "name": "NextRoundPrep",
+  "description": "Premium AI-powered interview preparation and complete StudentOS workspace featuring interactive study resources, portfolio templates, and wellness tools.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
