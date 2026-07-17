@@ -4,7 +4,8 @@ import {
   Award, Box, Info, ShieldAlert, Star, Play, CheckCircle2, ChevronRight, 
   ChevronDown, Search, ArrowRight, BookMarked, UserCheck, RefreshCw, Send,
   Trash2, Terminal, Code, HelpCircle, Check, X, FileCheck, ThumbsUp, Timer,
-  ExternalLink, Layers, GraduationCap, Github, Linkedin, Mail, ShieldCheck, Heart
+  ExternalLink, Layers, GraduationCap, Github, Linkedin, Mail, ShieldCheck, Heart,
+  Mic, MicOff, Copy
 } from "lucide-react";
 import { 
   curatedCourses, 
@@ -17,10 +18,15 @@ import {
   Course,
   CodingProblem,
   TcsModule,
-  Flashcard
+  Flashcard,
+  sureshAiStudioPrompt,
+  nextRoundPrepCorePrompt,
+  nextRoundPrepBuildPrompt,
+  nextRoundPrepFirebasePrompt
 } from "./learnWithSureshData";
 import { useTheme } from "./ThemeProvider";
 import confetti from "canvas-confetti";
+import StudyStreak from "./StudyStreak";
 
 // Basic 3D element rendering using standard Three.js inside a local Canvas
 // to prevent any complex r3f version mismatch while maintaining full interactive control!
@@ -216,13 +222,13 @@ export default function LearnWithSureshView({ activeSubTab, setActiveSubTab }: L
   const { theme } = useTheme();
   
   // Navigation tabs for the specific "Learn with Suresh" mode
-  const [localSubTab, setLocalSubTab] = useState<"home" | "learn" | "practice" | "career-suite" | "ai-tools">("home");
+  const [localSubTab, setLocalSubTab] = useState<"home" | "learn" | "practice" | "career-suite" | "ai-tools" | "ai-prompt">("home");
 
   const subTab = activeSubTab && activeSubTab.startsWith("learn-suresh-")
-    ? (activeSubTab.replace("learn-suresh-", "") as "home" | "learn" | "practice" | "career-suite" | "ai-tools")
+    ? (activeSubTab.replace("learn-suresh-", "") as "home" | "learn" | "practice" | "career-suite" | "ai-tools" | "ai-prompt")
     : localSubTab;
 
-  const setSubTab = (newTab: "home" | "learn" | "practice" | "career-suite" | "ai-tools") => {
+  const setSubTab = (newTab: "home" | "learn" | "practice" | "career-suite" | "ai-tools" | "ai-prompt") => {
     if (setActiveSubTab && activeSubTab) {
       setActiveSubTab(`learn-suresh-${newTab}`);
     } else {
@@ -233,6 +239,9 @@ export default function LearnWithSureshView({ activeSubTab, setActiveSubTab }: L
   // Home states
   const [streakCount, setStreakCount] = useState(5);
   const [streakClaimed, setStreakClaimed] = useState(false);
+  const [promptCopied, setPromptCopied] = useState(false);
+  const [selectedPromptKey, setSelectedPromptKey] = useState<"suresh" | "nrp-core" | "nrp-build" | "nrp-firebase">("suresh");
+  const [activeGoal, setActiveGoal] = useState<string>("Frontend Developer");
 
   // Learn tab states
   const [coursesSearch, setCoursesSearch] = useState("");
@@ -295,6 +304,77 @@ export default function LearnWithSureshView({ activeSubTab, setActiveSubTab }: L
     { role: "model", text: "Welcome to Learn with Suresh AI Study Advisor! Ask me anything about physics formulas, database structures, react states, or TCS aptitude strategies." }
   ]);
   const [isAdvisorTyping, setIsAdvisorTyping] = useState(false);
+
+  // Web Speech API / voice input states for AI Advisor
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      setSpeechSupported(true);
+      const rec = new SpeechRecognition();
+      rec.continuous = false;
+      rec.interimResults = false;
+      rec.lang = "en-IN"; // English (India) is perfect for Indian students!
+
+      rec.onstart = () => {
+        setIsListening(true);
+      };
+
+      rec.onend = () => {
+        setIsListening(false);
+      };
+
+      rec.onerror = (e: any) => {
+        console.error("Speech recognition error:", e.error);
+        setIsListening(false);
+      };
+
+      rec.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        if (transcript) {
+          setAdvisorInput((prev) => {
+            const trimmed = prev.trim();
+            return trimmed ? `${trimmed} ${transcript}` : transcript;
+          });
+          // Track speech-based session completing in StudyStreak
+          try {
+            const savedHistory = localStorage.getItem("nextroundprep_interview_history") || "[]";
+            const parsed = JSON.parse(savedHistory);
+            const voiceSession = {
+              id: Date.now().toString(),
+              title: `Voice input doubt asked: "${transcript.substring(0, 30)}..."`,
+              role: "Hands-Free Voice AI",
+              date: new Date().toISOString(),
+              score: 95,
+              feedback: "Excellent hands-free question asked to the AI Tutor!"
+            };
+            localStorage.setItem("nextroundprep_interview_history", JSON.stringify([voiceSession, ...parsed]));
+            window.dispatchEvent(new Event("storage"));
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      };
+
+      recognitionRef.current = rec;
+    }
+  }, []);
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) return;
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      try {
+        recognitionRef.current.start();
+      } catch (err) {
+        console.error("Failed to start speech recognition:", err);
+      }
+    }
+  };
 
   // Research states
   const [researchTopic, setResearchTopic] = useState("");
@@ -743,7 +823,7 @@ export default function LearnWithSureshView({ activeSubTab, setActiveSubTab }: L
           { id: "practice", label: "Compiler & Sandbox", icon: Laptop },
           { id: "career-suite", label: "Zuno AI Career Suite", icon: Briefcase },
           { id: "ai-tools", label: "AI Study Tools", icon: Laptop },
-          { id: "about", label: "About Creator", icon: Info },
+          { id: "ai-prompt", label: "AI Studio Prompt", icon: Sparkles },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = subTab === tab.id;
@@ -838,6 +918,9 @@ export default function LearnWithSureshView({ activeSubTab, setActiveSubTab }: L
               </button>
             </div>
           </div>
+
+          {/* Dynamic Study Streak Heatmap Component */}
+          <StudyStreak />
 
           {/* 3D Lab Show */}
           <Simple3DViewer />
@@ -1962,22 +2045,70 @@ export default function LearnWithSureshView({ activeSubTab, setActiveSubTab }: L
                 </div>
 
                 {/* Chat Inputs */}
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Enter academic topic or doubt..."
-                    value={advisorInput}
-                    onChange={(e) => setAdvisorInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSendAdvisorMsg()}
-                    className="flex-1 px-4 py-2.5 bg-[#121122] border border-white/5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500 font-sans"
-                  />
-                  <button
-                    disabled={isAdvisorTyping || !advisorInput.trim()}
-                    onClick={handleSendAdvisorMsg}
-                    className="bg-purple-500 hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed text-white p-2.5 rounded-xl cursor-pointer transition-all"
-                  >
-                    <Send className="w-4 h-4" />
-                  </button>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder={isListening ? "Listening to your voice..." : "Enter academic topic or doubt..."}
+                      value={advisorInput}
+                      onChange={(e) => setAdvisorInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSendAdvisorMsg()}
+                      disabled={isListening}
+                      className="flex-1 px-4 py-2.5 bg-[#121122] border border-white/5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500 font-sans disabled:opacity-75"
+                    />
+                    
+                    {speechSupported && (
+                      <button
+                        type="button"
+                        onClick={toggleListening}
+                        className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-center ${
+                          isListening
+                            ? "bg-red-500/20 border-red-500/40 text-red-400 animate-pulse shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                            : "bg-white/5 border-white/5 hover:bg-white/10 text-gray-400 hover:text-white"
+                        }`}
+                        title={isListening ? "Stop voice input" : "Hands-free Voice Input"}
+                      >
+                        {isListening ? (
+                          <MicOff className="w-4 h-4 text-red-400" />
+                        ) : (
+                          <Mic className="w-4 h-4 text-purple-400" />
+                        )}
+                      </button>
+                    )}
+
+                    <button
+                      disabled={isAdvisorTyping || !advisorInput.trim() || isListening}
+                      onClick={handleSendAdvisorMsg}
+                      className="bg-purple-500 hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed text-white p-2.5 rounded-xl cursor-pointer transition-all"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Speech status helper bar */}
+                  <div className="flex items-center justify-between text-[10px] px-1 text-gray-500 font-mono">
+                    {isListening ? (
+                      <span className="text-red-400 flex items-center gap-1 animate-pulse">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block"></span>
+                        Listening... Speak now and click mic to capture!
+                      </span>
+                    ) : speechSupported ? (
+                      <span className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1 cursor-pointer" onClick={toggleListening}>
+                        <Mic className="w-3 h-3" />
+                        Click mic for hands-free voice typing (Indian English supported)
+                      </span>
+                    ) : (
+                      <span className="text-gray-600">🎙️ Speech input not supported in this browser.</span>
+                    )}
+                    {advisorInput.length > 0 && (
+                      <button
+                        onClick={() => setAdvisorInput("")}
+                        className="text-[9px] text-gray-400 hover:text-red-400 transition-colors cursor-pointer"
+                      >
+                        Clear text
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -2164,6 +2295,127 @@ export default function LearnWithSureshView({ activeSubTab, setActiveSubTab }: L
           )}
         </div>
       )}
+
+      {subTab === "ai-prompt" && (() => {
+        const activePromptText = {
+          suresh: sureshAiStudioPrompt,
+          "nrp-core": nextRoundPrepCorePrompt,
+          "nrp-build": nextRoundPrepBuildPrompt,
+          "nrp-firebase": nextRoundPrepFirebasePrompt
+        }[selectedPromptKey];
+
+        const activePromptTitle = {
+          suresh: 'Google AI Studio Build Prompt — "Learn With Suresh"',
+          "nrp-core": 'Google AI Studio Prompt — "Next Round Prep AI Coach"',
+          "nrp-build": 'Google AI Studio Build Prompt — "NextRoundPrep Full Platform"',
+          "nrp-firebase": 'Google AI Studio Prompt — "Firebase Backend Integration"'
+        }[selectedPromptKey];
+
+        const activePromptDesc = {
+          suresh: 'Copy and paste this production-ready, highly curated, structural prompt blueprint directly into Google AI Studio (Build/App mode) as your starting prompt to instantly scaffold and deploy the 100% free educational hub.',
+          "nrp-core": 'Interactive AI interview preparation coach prompt. This defines the core persona, Mode A/B/C logic, feedback metrics, and exact conversational guidelines of the expert mock interviewer.',
+          "nrp-build": 'Comprehensive build instructions for the full-stack multi-hub NextRoundPrep platform, outlining the entire structural layout, styling specifications, seven modules, and global routing rules.',
+          "nrp-firebase": 'Full instruction blueprint for integrating Cloud Firestore database structures, collections, rules, role permissions, session management, and JWT-to-Firebase migration logic.'
+        }[selectedPromptKey];
+
+        const activePromptFilename = {
+          suresh: "learn-with-suresh-blueprint.md",
+          "nrp-core": "next-round-prep-coach-prompt.md",
+          "nrp-build": "next-round-prep-platform-blueprint.md",
+          "nrp-firebase": "firebase-db-auth-setup.md"
+        }[selectedPromptKey];
+
+        return (
+          <div className="space-y-8 animate-fade-in">
+            {/* Prompts Selector Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-purple-500/20">
+              {[
+                { key: "suresh", label: "Learn With Suresh", icon: GraduationCap },
+                { key: "nrp-core", label: "NRP Interview Coach", icon: UserCheck },
+                { key: "nrp-build", label: "NRP Full Platform", icon: Laptop },
+                { key: "nrp-firebase", label: "Firebase Integration", icon: ShieldCheck }
+              ].map((p) => {
+                const Icon = p.icon;
+                const isSelected = selectedPromptKey === p.key;
+                return (
+                  <button
+                    key={p.key}
+                    onClick={() => setSelectedPromptKey(p.key as any)}
+                    className={`flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer border transition-all duration-200 ${
+                      isSelected
+                        ? "bg-purple-500/20 border-purple-500/40 text-purple-300 shadow-md shadow-purple-500/5 scale-105"
+                        : "bg-[#11101e]/60 border-white/5 text-gray-400 hover:text-white hover:border-white/10"
+                    }`}
+                  >
+                    <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-[#22d3ee]" : "text-gray-400"}`} />
+                    {p.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Header */}
+            <div className="bg-gradient-to-b from-[#151429] to-[#090916] border border-white/5 rounded-3xl p-6 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-2 max-w-2xl">
+                <p className="text-[10px] font-mono text-purple-400 font-bold uppercase tracking-widest">AI STUDIO INTEGRATION BLUEPRINT</p>
+                <h3 className="text-xl font-bold text-white font-sans flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[#22d3ee] animate-pulse" />
+                  {activePromptTitle}
+                </h3>
+                <p className="text-xs text-gray-400 leading-relaxed font-sans">
+                  {activePromptDesc}
+                </p>
+              </div>
+              <div>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(activePromptText);
+                    setPromptCopied(true);
+                    setTimeout(() => setPromptCopied(false), 2000);
+                    confetti({
+                      particleCount: 50,
+                      spread: 40,
+                      colors: ["#a855f7", "#22d3ee"]
+                    });
+                  }}
+                  className={`w-full md:w-auto py-3 px-6 rounded-xl text-xs font-bold font-sans cursor-pointer transition-all duration-200 border flex items-center justify-center gap-2 ${
+                    promptCopied 
+                      ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
+                      : "bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 border-purple-500/20 text-white shadow-lg shadow-purple-500/10"
+                  }`}
+                >
+                  {promptCopied ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Copied Blueprint!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      Copy Active Prompt
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Prompt Viewer Box */}
+            <div className="bg-[#090815]/80 border border-white/5 rounded-3xl overflow-hidden shadow-xl">
+              <div className="bg-[#11101e]/80 px-6 py-4 border-b border-white/5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Terminal className="w-4 h-4 text-purple-400" />
+                  <span className="text-xs font-bold text-gray-300 font-mono">{activePromptFilename}</span>
+                </div>
+                <span className="text-[10px] font-mono text-gray-500 uppercase">Production Seed</span>
+              </div>
+              
+              <div className="p-6 overflow-y-auto max-h-[600px] font-mono text-xs text-gray-300 leading-relaxed whitespace-pre-wrap select-text selection:bg-purple-500/30">
+                {activePromptText}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

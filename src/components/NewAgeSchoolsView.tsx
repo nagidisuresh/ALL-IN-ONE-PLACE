@@ -239,20 +239,33 @@ Requirements:
     setTimeout(() => setCopiedIndex(null), 1500);
   };
 
-  const categories = ["All", "Elite Upskilling & UG Degree", "Full-Stack & Tech Degree", "4.0 Industry Technologies", "AI-First Tech Fellowship", "Modern Advanced Prep", "Outcome-Driven Bootcamps", "AI Developer Academy"];
+  const categories = ["All", "NIAT Programs", "Tech Academies", "Intensive Bootcamps", "AI Developer Academy", "Outcome-Driven Bootcamps"];
 
   const filteredSchools = NEW_AGE_SCHOOLS_DATA.filter((school) => {
     const matchesSearch = school.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           school.tagline.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           school.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = activeCategory === "All" || school.category === activeCategory;
+    
+    let matchesCategory = true;
+    if (activeCategory === "All") {
+      matchesCategory = true;
+    } else if (activeCategory === "NIAT Programs") {
+      matchesCategory = school.name.toLowerCase().includes("niat") || school.tags.some(t => t.toLowerCase().includes("niat"));
+    } else if (activeCategory === "Tech Academies") {
+      matchesCategory = school.name.toLowerCase().includes("academy") || school.category.toLowerCase().includes("academy") || school.name.toLowerCase().includes("scaler") || school.name.toLowerCase().includes("polaris") || school.name.toLowerCase().includes("school") || school.name.toLowerCase().includes("ninja");
+    } else if (activeCategory === "Intensive Bootcamps") {
+      matchesCategory = school.category.toLowerCase().includes("bootcamp") || school.tagline.toLowerCase().includes("bootcamp") || school.description.toLowerCase().includes("bootcamp") || school.tags.some(t => t.toLowerCase().includes("bootcamp"));
+    } else {
+      matchesCategory = school.category === activeCategory;
+    }
+    
     return matchesSearch && matchesCategory;
   });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-8 pb-16 relative">
       {/* Visual Header */}
-      <div className="text-center space-y-3 max-w-3xl mx-auto pt-6">
+      <div className="text-center space-y-4 max-w-3xl mx-auto pt-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-500/10 border border-rose-500/20 text-rose-300 rounded-full text-xs font-mono font-bold uppercase tracking-wider">
           <GraduationCap className="w-3.5 h-3.5" />
           <span>New-Age Universities Hub</span>
@@ -268,60 +281,46 @@ Requirements:
       {/* Interactive AI Prompt Copy Panel (User prompt request solved) */}
       <div className="p-6 rounded-2xl border border-rose-500/20 bg-rose-500/[0.01] relative overflow-hidden max-w-4xl mx-auto space-y-4">
         <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-2xl pointer-events-none" />
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div className="space-y-2 flex-1">
             <span className="text-[10px] font-mono text-rose-400 font-bold bg-rose-400/10 px-2 py-0.5 rounded uppercase">
-              Free Platform Developer Kit
+              I WAS STUDYING IN THE NEW AGE SCHOOL NIAT
             </span>
-            <h3 className="text-base font-bold text-slate-200">Want to generate your own Tech Schools website?</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              We structured all these new age schools, programs, and direct resources into a single optimized AI Prompt. Click below to copy it and deploy your own directory!
-            </p>
+            <h3 className="text-base font-bold text-slate-200">Want to generate your own Tech Schools website or Apply to NIAT?</h3>
+            <div className="text-xs text-slate-400 leading-relaxed space-y-2">
+              <p>
+                NIAT (NxtWave Institute of Advanced Technologies) is a pioneering institute founded by IIT and IIIT alumni, built to bridge the gap between traditional engineering and modern tech industry demands.
+              </p>
+              <p>
+                The curriculum moves beyond outdated theory by focusing on a 'builder mindset,' offering hands-on, project-based learning in AI, Data Science, and Full-Stack development from day one.
+              </p>
+              <p>
+                With an evolving syllabus updated every semester and a massive network of 3,000+ hiring partners, NIAT transforms students into highly sought-after, next-gen tech leaders.
+              </p>
+            </div>
           </div>
-          <button
-            onClick={handleCopyPrompt}
-            className="px-5 py-2.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold rounded-xl text-xs transition-all flex items-center gap-2 cursor-pointer self-stretch sm:self-auto justify-center"
-          >
-            {promptCopied ? (
-              <>
-                <Check className="w-4 h-4" />
-                <span>Copied Kit!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4" />
-                <span>Copy Platform Prompt</span>
-              </>
-            )}
-          </button>
+          
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full lg:w-auto">
+            <a
+              href="https://apply.niatindia.com/application?utm_source=ine-dashboard&utm_medium=copylink&utm_campaign=invite-niat-referral-platform&target_program=niat&association_type=ine&coupon_code=NIATS9541&invite_code=T6VGST&source_program=niat&program_batch=NIAT-2506"
+              target="_blank"
+              referrerPolicy="no-referrer"
+              className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold rounded-xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer border border-emerald-500/20 shadow-lg shadow-emerald-500/10"
+            >
+              <GraduationCap className="w-4 h-4 text-white" />
+              <span>Apply to NIAT</span>
+            </a>
+          </div>
         </div>
       </div>
 
       {/* Navigation Tabs for sub-views */}
-      <div className="flex border-b border-white/5 max-w-md mx-auto sm:mx-0">
+      <div className="flex border-b border-white/5 max-w-xs mx-auto sm:mx-0">
         <button
           onClick={() => setViewMode("directory")}
-          className={`flex-1 pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer text-center ${
-            viewMode === "directory"
-              ? "border-rose-500 text-white"
-              : "border-transparent text-slate-400 hover:text-white"
-          }`}
+          className="flex-1 pb-3 text-sm font-bold border-b-2 border-rose-500 text-white transition-all cursor-pointer text-center"
         >
           📚 School Directory
-        </button>
-        <button
-          onClick={() => setViewMode("compare")}
-          className={`flex-1 pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer text-center flex items-center justify-center gap-2 ${
-            viewMode === "compare"
-              ? "border-rose-500 text-white"
-              : "border-transparent text-slate-400 hover:text-white"
-          }`}
-        >
-          <ArrowLeftRight className="w-4 h-4 text-rose-400" />
-          <span>Compare Hub</span>
-          <span className="text-[10px] font-mono bg-rose-500/10 text-rose-300 border border-rose-500/20 px-1.5 py-0.5 rounded-full font-bold">
-            {selectedSchools.length}
-          </span>
         </button>
       </div>
 

@@ -44,11 +44,48 @@
   background: var(--app-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--app-border);
+  background: linear-gradient(180deg, #ec4899, #a855f7, #22d3ee);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--app-text-muted);
+  background: linear-gradient(180deg, #f43f5e, #c084fc, #06b6d4);
+}
+
+/* Ensure horizontal switchers and header bars show scrollbars beautifully */
+.no-scrollbar, .scrollbar-none, .scrollbar-thin, [class*="overflow-x-auto"] {
+  scrollbar-width: thin !important;
+  scrollbar-color: #a855f7 rgba(0, 0, 0, 0.2) !important;
+}
+
+.no-scrollbar::-webkit-scrollbar, 
+.scrollbar-none::-webkit-scrollbar, 
+.scrollbar-thin::-webkit-scrollbar,
+[class*="overflow-x-auto"]::-webkit-scrollbar {
+  height: 6px !important;
+  display: block !important;
+}
+
+.no-scrollbar::-webkit-scrollbar-track, 
+.scrollbar-none::-webkit-scrollbar-track, 
+.scrollbar-thin::-webkit-scrollbar-track,
+[class*="overflow-x-auto"]::-webkit-scrollbar-track {
+  background: rgba(15, 14, 28, 0.3) !important;
+  border-radius: 10px !important;
+}
+
+.no-scrollbar::-webkit-scrollbar-thumb, 
+.scrollbar-none::-webkit-scrollbar-thumb, 
+.scrollbar-thin::-webkit-scrollbar-thumb,
+[class*="overflow-x-auto"]::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #ec4899 0%, #a855f7 50%, #22d3ee 100%) !important;
+  border-radius: 10px !important;
+}
+
+.no-scrollbar::-webkit-scrollbar-thumb:hover, 
+.scrollbar-none::-webkit-scrollbar-thumb:hover, 
+.scrollbar-thin::-webkit-scrollbar-thumb:hover,
+[class*="overflow-x-auto"]::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #f43f5e 0%, #c084fc 50%, #06b6d4 100%) !important;
 }
 
 body {

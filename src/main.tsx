@@ -2,6 +2,8 @@ import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import { ThemeProvider } from './components/ThemeProvider.tsx';
+import { LanguageProvider } from './components/LanguageProvider.tsx';
+import { ToastProvider } from './components/Toast.tsx';
 import './index.css';
 
 // Handle and suppress benign HMR WebSocket/Vite errors in the sandbox environment
@@ -38,7 +40,11 @@ if (typeof window !== "undefined") {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
-      <App />
+      <LanguageProvider>
+        <ToastProvider>
+          <App />
+        </ToastProvider>
+      </LanguageProvider>
     </ThemeProvider>
   </StrictMode>,
 );

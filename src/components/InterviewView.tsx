@@ -396,6 +396,7 @@ export default function InterviewView() {
 
   // Voice & Transcription
   const recognitionRef = useRef<any>(null);
+  const isRecognitionActiveRef = useRef<boolean>(false);
 
   // Feedback State
   const [currentFeedback, setCurrentFeedback] = useState<EvaluationFeedback | null>(null);
@@ -683,6 +684,14 @@ export default function InterviewView() {
       rec.interimResults = true;
       rec.lang = "en-US";
 
+      rec.onstart = () => {
+        isRecognitionActiveRef.current = true;
+      };
+
+      rec.onend = () => {
+        isRecognitionActiveRef.current = false;
+      };
+
       rec.onresult = (event: any) => {
         let finalTrans = "";
         for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -697,6 +706,7 @@ export default function InterviewView() {
 
       rec.onerror = (e: any) => {
         console.warn("Speech recognition error", e);
+        isRecognitionActiveRef.current = false;
       };
 
       recognitionRef.current = rec;
@@ -874,7 +884,7 @@ export default function InterviewView() {
     setDuration(0);
 
     // Start speech recognition
-    if (recognitionRef.current) {
+    if (recognitionRef.current && !isRecognitionActiveRef.current) {
       try {
         recognitionRef.current.start();
       } catch (e) {
@@ -955,6 +965,7 @@ export default function InterviewView() {
       const updatedList = [newEntry, ...historyList];
       localStorage.setItem("nextroundprep_interview_history", JSON.stringify(updatedList));
       setHistoryList(updatedList);
+      window.dispatchEvent(new CustomEvent("update-user-points"));
     } catch (err) {
       console.error("Failed to save interview session to history:", err);
     }
@@ -1100,7 +1111,7 @@ export default function InterviewView() {
       // Re-enable and start recording automatically for continuous flow
       setTimeout(() => {
         setIsRecording(true);
-        if (recognitionRef.current) {
+        if (recognitionRef.current && !isRecognitionActiveRef.current) {
           try {
             recognitionRef.current.start();
           } catch (e) {
@@ -1163,7 +1174,7 @@ export default function InterviewView() {
       
       setTimeout(() => {
         setIsRecording(true);
-        if (recognitionRef.current) {
+        if (recognitionRef.current && !isRecognitionActiveRef.current) {
           try {
             recognitionRef.current.start();
           } catch (e) {
@@ -1409,6 +1420,7 @@ ${fb.modelAnswer}
       const updated = historyList.filter(item => item.id !== id);
       setHistoryList(updated);
       localStorage.setItem("nextroundprep_interview_history", JSON.stringify(updated));
+      window.dispatchEvent(new CustomEvent("update-user-points"));
       if (expandedHistoryId === id) setExpandedHistoryId(null);
     } catch (err) {
       console.error("Failed to delete history entry:", err);

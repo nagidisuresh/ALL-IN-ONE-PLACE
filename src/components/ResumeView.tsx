@@ -5,6 +5,8 @@ import {
   RefreshCw, Briefcase, Target, AlertTriangle, Copy, ClipboardCheck
 } from "lucide-react";
 import { ResumeData, ResumeEnhancement } from "../types";
+import { auth } from "../lib/firebase";
+import { saveResumeReportToFirestore } from "../lib/firebaseDb";
 
 export default function ResumeView() {
   const [step, setStep] = useState(1); // 1 to 4 steps
@@ -300,11 +302,30 @@ export default function ResumeView() {
       const data = await response.json();
       setMatchResult(data);
       setViewReport(true);
+
+      // Backup report to Firestore if logged in
+      const user = auth.currentUser;
+      if (user) {
+        saveResumeReportToFirestore(user.uid, {
+          id: Date.now().toString(),
+          resumeScore: data.matchPercentage || data.scoreBreakdown?.skillsMatch || 70,
+          atsScore: data.matchPercentage || 70,
+          matchPercentage: data.matchPercentage,
+          scoreBreakdown: data.scoreBreakdown,
+          matchedKeywords: data.matchedKeywords,
+          missingKeywords: data.missingKeywords,
+          gapsAnalysis: data.gapsAnalysis,
+          actionableSuggestions: data.actionableSuggestions,
+          atsOptimizedSummary: data.atsOptimizedSummary,
+          createdDate: new Date().toISOString(),
+          updatedDate: new Date().toISOString()
+        }).catch(err => console.error("Failed to backup resume to Firestore", err));
+      }
     } catch (err: any) {
       console.error(err);
       setMatchError(err.message || "Could not complete match analysis.");
       // Fallback robust analysis if offline or server fails
-      setMatchResult({
+      const fallbackData = {
         matchPercentage: 72,
         scoreBreakdown: {
           keywordMatch: 65,
@@ -321,8 +342,28 @@ export default function ResumeView() {
           "Add Docker or microservice collaboration terms directly to your Technical Skills grid."
         ],
         atsOptimizedSummary: "Results-driven Senior Frontend Engineer with 4 years of expertise engineering scalable web platforms in React, TypeScript, and Tailwind CSS. Proven record of collaborating with product teams and optimizing payload delivery. Eager to align technical skills with strict testing coverage and CI/CD operations."
-      });
+      };
+      setMatchResult(fallbackData);
       setViewReport(true);
+
+      // Backup report to Firestore if logged in
+      const user = auth.currentUser;
+      if (user) {
+        saveResumeReportToFirestore(user.uid, {
+          id: Date.now().toString(),
+          resumeScore: fallbackData.matchPercentage,
+          atsScore: fallbackData.matchPercentage,
+          matchPercentage: fallbackData.matchPercentage,
+          scoreBreakdown: fallbackData.scoreBreakdown,
+          matchedKeywords: fallbackData.matchedKeywords,
+          missingKeywords: fallbackData.missingKeywords,
+          gapsAnalysis: fallbackData.gapsAnalysis,
+          actionableSuggestions: fallbackData.actionableSuggestions,
+          atsOptimizedSummary: fallbackData.atsOptimizedSummary,
+          createdDate: new Date().toISOString(),
+          updatedDate: new Date().toISOString()
+        }).catch(err => console.error("Failed to backup resume fallback to Firestore", err));
+      }
     } finally {
       setIsMatching(false);
     }

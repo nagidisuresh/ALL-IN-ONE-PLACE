@@ -8,7 +8,6 @@ import {
   Laptop, Cpu, ArrowUpRight, CheckCircle, ExternalLink, ChevronRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import MotorcycleSequence from "./MotorcycleSequence";
 
 // 3D Morphing Geometric Shape inside the Canvas
 function FuturisticObject({ scrollY, mouseX, mouseY }: { scrollY: number; mouseX: number; mouseY: number }) {
@@ -324,23 +323,6 @@ export default function ThreeDShowcaseView() {
 
         </div>
 
-      </div>
-
-      {/* 90-Frame High-Performance Scroll-Driven Motorcycle Sequence */}
-      <div className="space-y-6 pt-10">
-        <div className="text-center space-y-1.5 max-w-xl mx-auto">
-          <span className="text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 inline-block">
-            STORYTELLING DECK
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">
-            High-Performance 90-Frame Image Sequence
-          </h2>
-          <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
-            Smooth 60fps HTML5 Canvas rendering of a 3D rotating Motorcycle, preloading images with a state-of-the-art vector blueprint fallback.
-          </p>
-        </div>
-
-        <MotorcycleSequence />
       </div>
 
       {/* 2. Interactive Scroll-Driven 3D Cards Grid Section */}

@@ -1,0 +1,419 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Comprehensive user profile containing streak, level, achievements, resume URLs, portfolio links, and preferences.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique user ID matching their Firebase Auth UID." },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "profilePicture": { "type": "string" },
+        "bio": { "type": "string" },
+        "country": { "type": "string" },
+        "city": { "type": "string" },
+        "college": { "type": "string" },
+        "university": { "type": "string" },
+        "degree": { "type": "string" },
+        "branch": { "type": "string" },
+        "skills": { "type": "array" },
+        "interests": { "type": "array" },
+        "role": { "type": "string", "description": "User role: student, candidate, or admin" },
+        "subscriptionPlan": { "type": "string" },
+        "accountStatus": { "type": "string", "description": "active, banned, or suspended" },
+        "emailVerified": { "type": "boolean" },
+        "createdDate": { "type": "string" },
+        "updatedDate": { "type": "string" },
+        "lastLogin": { "type": "string" },
+        "loginProvider": { "type": "string" },
+        "notificationSettings": { "type": "object" },
+        "darkMode": { "type": "boolean" },
+        "language": { "type": "string" },
+        "bookmarks": { "type": "array" },
+        "favoriteCourses": { "type": "array" },
+        "achievements": { "type": "array" },
+        "xpPoints": { "type": "number" },
+        "currentLevel": { "type": "number" },
+        "streakCount": { "type": "number" },
+        "attendance": { "type": "array" },
+        "certificates": { "type": "array" },
+        "resumeUrl": { "type": "string" },
+        "portfolioUrl": { "type": "string" },
+        "githubUrl": { "type": "string" },
+        "linkedinUrl": { "type": "string" },
+        "websiteUrl": { "type": "string" }
+      },
+      "required": ["uid", "email", "createdDate"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Syllabus courses available on the platform.",
+      "type": "object",
+      "properties": {
+        "courseId": { "type": "string" },
+        "courseName": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "thumbnail": { "type": "string" },
+        "difficulty": { "type": "string" },
+        "duration": { "type": "string" },
+        "instructor": { "type": "string" },
+        "lessons": { "type": "array" },
+        "resources": { "type": "array" },
+        "assignments": { "type": "array" },
+        "projects": { "type": "array" },
+        "quizCount": { "type": "number" },
+        "enrollmentCount": { "type": "number" },
+        "rating": { "type": "number" },
+        "reviews": { "type": "array" },
+        "createdDate": { "type": "string" },
+        "updatedDate": { "type": "string" },
+        "publishedStatus": { "type": "string" }
+      },
+      "required": ["courseId", "courseName", "publishedStatus"]
+    },
+    "EnrolledCourse": {
+      "title": "Enrolled Course",
+      "description": "Courses enrolled by a specific user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "enrollmentDate": { "type": "string" },
+        "completionPercent": { "type": "number" },
+        "currentLesson": { "type": "string" },
+        "lastViewed": { "type": "string" },
+        "certificateEarned": { "type": "boolean" },
+        "completionDate": { "type": "string" }
+      },
+      "required": ["userId", "courseId", "enrollmentDate", "completionPercent"]
+    },
+    "InterviewQuestion": {
+      "title": "Interview Question",
+      "description": "Bank of interview questions for prep.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "question": { "type": "string" },
+        "category": { "type": "string" },
+        "difficulty": { "type": "string" },
+        "company": { "type": "string" },
+        "role": { "type": "string" },
+        "answer": { "type": "string" },
+        "explanation": { "type": "string" },
+        "tags": { "type": "array" },
+        "videoLink": { "type": "string" },
+        "createdDate": { "type": "string" }
+      },
+      "required": ["question", "category", "difficulty"]
+    },
+    "MockInterview": {
+      "title": "Mock Interview",
+      "description": "AI feedback on user's mock interview attempts.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "interviewType": { "type": "string" },
+        "questions": { "type": "array" },
+        "aiFeedback": { "type": "string" },
+        "overallScore": { "type": "number" },
+        "communicationScore": { "type": "number" },
+        "technicalScore": { "type": "number" },
+        "confidenceScore": { "type": "number" },
+        "grammarScore": { "type": "number" },
+        "suggestions": { "type": "string" },
+        "completedDate": { "type": "string" }
+      },
+      "required": ["userId", "interviewType", "overallScore", "completedDate"]
+    },
+    "Resume": {
+      "title": "Resume",
+      "description": "ATS score and suggestions for user resumes.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "resumePdf": { "type": "string" },
+        "resumeScore": { "type": "number" },
+        "atsScore": { "type": "number" },
+        "suggestions": { "type": "string" },
+        "createdDate": { "type": "string" },
+        "updatedDate": { "type": "string" }
+      },
+      "required": ["userId", "resumePdf", "resumeScore", "createdDate"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "Study notes created or saved by users.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "pdfUrl": { "type": "string" },
+        "subject": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "array" },
+        "createdDate": { "type": "string" },
+        "updatedDate": { "type": "string" }
+      },
+      "required": ["userId", "title", "createdDate"]
+    },
+    "Quiz": {
+      "title": "Quiz",
+      "description": "Practice quizzes.",
+      "type": "object",
+      "properties": {
+        "quizId": { "type": "string" },
+        "quizName": { "type": "string" },
+        "questions": { "type": "array" },
+        "options": { "type": "array" },
+        "correctAnswers": { "type": "array" },
+        "marks": { "type": "number" },
+        "timeLimit": { "type": "number" },
+        "difficulty": { "type": "string" },
+        "category": { "type": "string" },
+        "createdDate": { "type": "string" }
+      },
+      "required": ["quizId", "quizName", "questions"]
+    },
+    "QuizResult": {
+      "title": "Quiz Result",
+      "description": "Results of user quiz submissions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "quizId": { "type": "string" },
+        "score": { "type": "number" },
+        "correctAnswers": { "type": "number" },
+        "wrongAnswers": { "type": "number" },
+        "skipped": { "type": "number" },
+        "timeTaken": { "type": "number" },
+        "completedDate": { "type": "string" }
+      },
+      "required": ["userId", "quizId", "score", "completedDate"]
+    },
+    "LearningPath": {
+      "title": "Learning Path",
+      "description": "Career roadmap and skill requirements.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "careerName": { "type": "string" },
+        "description": { "type": "string" },
+        "roadmap": { "type": "array" },
+        "skillsRequired": { "type": "array" },
+        "courses": { "type": "array" },
+        "projects": { "type": "array" },
+        "resources": { "type": "array" },
+        "certificates": { "type": "array" },
+        "estimatedTime": { "type": "string" }
+      },
+      "required": ["careerName", "roadmap"]
+    },
+    "Progress": {
+      "title": "Progress",
+      "description": "Aggregated user learning progress.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "dailyProgress": { "type": "object" },
+        "weeklyProgress": { "type": "object" },
+        "monthlyProgress": { "type": "object" },
+        "completedCourses": { "type": "array" },
+        "completedProjects": { "type": "array" },
+        "xp": { "type": "number" },
+        "level": { "type": "number" },
+        "achievements": { "type": "array" },
+        "studyTime": { "type": "number" }
+      },
+      "required": ["userId"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "User specific checklist tasks.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "taskName": { "type": "string" },
+        "priority": { "type": "string" },
+        "status": { "type": "string" },
+        "deadline": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "createdDate": { "type": "string" },
+        "updatedDate": { "type": "string" }
+      },
+      "required": ["userId", "taskName", "completed", "createdDate"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app system notifications for the user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdDate": { "type": "string" }
+      },
+      "required": ["userId", "title", "read", "createdDate"]
+    },
+    "SupportMessage": {
+      "title": "Support Message",
+      "description": "Support tickets submitted by users.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "reply": { "type": "string" },
+        "status": { "type": "string" },
+        "createdDate": { "type": "string" }
+      },
+      "required": ["userId", "subject", "message", "status", "createdDate"]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "User feedback, bug reports, and feature requests.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "featureRequest": { "type": "boolean" },
+        "bugReport": { "type": "boolean" },
+        "createdDate": { "type": "string" }
+      },
+      "required": ["userId", "rating", "createdDate"]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Issued course completion certificates.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "certificateName": { "type": "string" },
+        "course": { "type": "string" },
+        "certificateUrl": { "type": "string" },
+        "issuedDate": { "type": "string" },
+        "verificationId": { "type": "string" }
+      },
+      "required": ["userId", "certificateName", "certificateUrl", "issuedDate"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Payment records.",
+      "type": "object",
+      "properties": {
+        "transactionId": { "type": "string" },
+        "userId": { "type": "string" },
+        "plan": { "type": "string" },
+        "amount": { "type": "number" },
+        "currency": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "createdDate": { "type": "string" }
+      },
+      "required": ["transactionId", "userId", "plan", "amount", "paymentStatus", "createdDate"]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "Active user subscription tracking.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "plan": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "status": { "type": "string" },
+        "renewal": { "type": "boolean" }
+      },
+      "required": ["userId", "plan", "startDate", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Users profile collection."
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "Platform catalog courses."
+    },
+    "/enrolledCourses/{enrollmentId}": {
+      "schema": "EnrolledCourse",
+      "description": "Track course enrollment progress."
+    },
+    "/interview_questions/{questionId}": {
+      "schema": "InterviewQuestion",
+      "description": "Mock interview questions database."
+    },
+    "/mock_interviews/{interviewId}": {
+      "schema": "MockInterview",
+      "description": "AI analysis results of user mock interviews."
+    },
+    "/resumes/{resumeId}": {
+      "schema": "Resume",
+      "description": "Scored resume documents and analysis reports."
+    },
+    "/notes/{noteId}": {
+      "schema": "Note",
+      "description": "Subject study notes created by students."
+    },
+    "/quizzes/{quizId}": {
+      "schema": "Quiz",
+      "description": "Multiple choice interactive test definitions."
+    },
+    "/quiz_results/{resultId}": {
+      "schema": "QuizResult",
+      "description": "Records of quiz score submissions by users."
+    },
+    "/learning_paths/{pathId}": {
+      "schema": "LearningPath",
+      "description": "Predefined learning pathways and roadmaps."
+    },
+    "/progress/{progressId}": {
+      "schema": "Progress",
+      "description": "Continuous progress and study stats collection."
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Self-study goals or homework checklists."
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Notifications generated for each user."
+    },
+    "/support_messages/{messageId}": {
+      "schema": "SupportMessage",
+      "description": "Inquiries, replies, and ticketing system messages."
+    },
+    "/feedback/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "Reviews, requests, and platform ratings."
+    },
+    "/certificates/{certificateId}": {
+      "schema": "Certificate",
+      "description": "Completed course credentials issued."
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Transaction summaries."
+    },
+    "/subscriptions/{subscriptionId}": {
+      "schema": "Subscription",
+      "description": "Store active memberships or pro plans."
+    }
+  }
+}

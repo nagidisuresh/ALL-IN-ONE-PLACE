@@ -559,3 +559,781 @@ export const mockFlashcards: Flashcard[] = [
     box: 1
   }
 ];
+
+export const sureshAiStudioPrompt = `# Google AI Studio Build Prompt — "Learn With Suresh"
+
+Paste everything below into Google AI Studio (Build/App mode) as your starting prompt.
+
+---
+
+Build a full-stack web app called "Learn With Suresh" — a 100% free, curated resource hub for Indian students, from Class 1 through career placement. Use React + TypeScript + Tailwind CSS. Support light/dark mode (moon icon toggle in navbar). Support an English language toggle (top-right "English" dropdown) even if only English is implemented for now.
+
+## TECHNICAL STACK
+- React + TypeScript + Tailwind CSS
+- React Router for multi-page navigation
+- Supabase for authentication and database
+- shadcn/ui components for UI elements
+- i18n for multi-language support (implement English first)
+- Three.js for immersive 3D experience
+
+## VISUAL DESIGN SYSTEM
+- **Primary Accent**: Orange (#F97316) for CTAs, badges, logo
+- **Secondary Accent**: Deep Navy/Indigo (#1E2A5E) for headings, active states, primary buttons
+- **Hero Gradient**: Blue-violet → Orange diagonal
+- **Cards**: Rounded-xl with soft shadows, generous whitespace
+- **Buttons**: Pill-shaped throughout the app
+- **Icons**: Outline-style (lucide-react) for navigation, emoji + label for category tags
+- **Dark Mode**: Support light/dark mode with moon icon toggle in navbar
+- **Responsive**: Fully responsive; sidebar-list + detail-panel pattern collapses to stacked on mobile
+- **Theme**: Dark, futuristic theme with purple/neon-blue gradient accents on near-black (slate-900/950) background. Glassy cards with subtle borders, glowing hover states, smooth scroll-reveal animations.
+
+## BRAND & HEADER
+- **Logo**: Orange rounded-square graduation-cap icon + wordmark "Learn With Suresh" in dark navy, bold, two-line wrap on smaller screens
+- **Sticky top navbar** (white/dark surface, subtle bottom border) with, left to right:
+  - Logo
+  - Nav links: Home (dropdown), Platforms, Courses, Practice, Competitions, Free Software, Research AI, AI Advisor, Flashcards, Blog
+  - "Home" dropdown sub-items: School, Higher Ed, Coding, Career, About (icon + label rows)
+  - Right side: Bookmark icon (saved/bookmarked resources), Language dropdown ("English" + globe icon), Dark-mode toggle (moon icon), Sign-out icon, Colored circular avatar badge with user's first initial (e.g., orange/pink circle with "S")
+
+## PAGES & ROUTING
+1. Home (/)
+2. Platforms (/platforms)
+3. Courses (/courses)
+4. Practice (/practice)
+5. Competitions (/competitions)
+6. Free Software (/free-software)
+7. Blog (/blog)
+8. Categories (/categories)
+9. Entrance Exams (/entrance-exams)
+10. Career Hub (/career-hub)
+11. Jobs (/jobs)
+12. Research Assistant (/research)
+13. AI Advisor (/ai-advisor)
+14. Flashcards (/flashcards)
+15. Immersive (/immersive) — 3D learning experience with Three.js
+16. Agency (/agency) — about page
+
+## HOME PAGE COMPONENTS
+1. **Hero Section** — Full-width gradient background (blue-purple fading to orange, diagonal) with:
+   - Pill badge: "✨ 100% Free · Curated for Indian Students"
+   - Headline: "Free Quality Education for" (white) / "Every Indian Student" (orange-yellow, bold)
+   - Subtext: "From Class 1 to Career — the best free learning platforms, all in one place."
+   - Two buttons: "Explore Resources →" (white/solid) and "Start Learning Free" (outlined/ghost)
+   - Decorative soft blurred rounded squares/circles floating in background
+
+2. **Stats Strip** — Big bold numbers with labels: "20+" (platforms), "1 Cr+" (students reached), "100%" (free) — three-column centered layout
+
+3. **LEARNHUB Section Card** — Rounded card with light gradient background containing:
+   - "LEARNHUB" pill badge
+   - Heading: "Your Gateway to Free Learning & Career Growth"
+   - Subtext: "Discover free courses, coding practice, hackathons and certifications — curated from 8+ top platforms."
+   - Row of pill-shaped nav buttons: Platforms Directory →, Courses →, Coding Practice →, Competitions →, Free Software →, Research AI →, AI Advisor →, Flashcards →, Blog & Tips →, Immersive 3D →
+   - "My Bookmarks" button top-right of card
+
+4. **"Hi, I'm Suresh" Personal Intro** — Split layout: photo/video on one side (purple gradient framed image), "LEARN WITH SURESH" pill badge, heading "Hi, I'm Suresh", personal bio/mission blurb
+
+5. **Resource Grid Sections** — Each resource card contains:
+   - Platform logo/icon (top-left)
+   - Category tag pill (e.g., "GOVT EXAM") top-right + heart/favorite icon
+   - Title (bold)
+   - One-line description (gray subtext)
+   - Row of small icon buttons (X/Twitter, Play/video, chat/comment icons)
+   - Full-width dark navy "Visit Site ↗" button
+   - Small circular info "i" button
+
+6. **Footer** — Logo + tagline, social icons (LinkedIn, YouTube, Telegram, Instagram, Twitter), "QUICK LINKS" column (School, Higher Ed, Coding, Career), "DISCLAIMER" column
+
+## ENTRANCE EXAM HUB (/entrance-exams)
+- **Left Sidebar**: Scrollable vertical list of exam pill-buttons (icon + name + state/scope tag like "AP", "TS", "NAT")
+- **Exams**: AP EAPCET, AP POLYCET, APRJC CET, TS EAPCET, TS POLYCET, JEE Main, JEE Advanced, BITSAT, VITEEE, NEET UG, CUET UG, CLAT, NATA
+- **Right Detail Panel** for selected exam:
+  - Icon + category tag ("STATE EXAM" / "NATIONAL EXAM" / "GOVT EXAM")
+  - Exam name as heading, short description, one-line detail sentence
+  - "Official Portal ↗" button top-right
+  - "🎓 Free Preparation Resources" — 2-column grid of resource cards (name, one-line note, external-link icon)
+  - "▶ YouTube Learning Channels" — channel cards
+
+## COMPETITIONS & OPPORTUNITIES (/competitions)
+- Heading "Competitions & Opportunities", subtext "Hackathons, case studies, quizzes and internships — sorted by upcoming deadline"
+- **Filter groups**: Type (All, Hackathon, Case Study, Quiz, Internship) and Domain (All, Tech, Business, Design, Data Science)
+- **Opportunity cards**: Category tag pills, bold title, "By [source]" byline, deadline date (calendar icon), "Apply ↗" link
+
+## AI TOOL ADVISOR (/ai-advisor)
+- Heading "AI Tool Advisor" with icon, subtext "Ask anything — get matched to the right tool from 77+ AI services"
+- **Chat-style panel**: Centered sparkle icon, prompt "Tell me your goal — I'll recommend the best free or freemium AI tool"
+- **Example question chips**:
+  - "I need to summarize 50 PDFs for my literature review"
+  - "Best free tool to remove background from product photos?"
+  - "I want to turn my notes into a quiz"
+  - "Recommend a tool to write academic papers with citations"
+  - "Best AI to generate a song with lyrics"
+  - "How can I transcribe a 1-hour meeting for free?"
+- **Bottom**: Text input + "Send" button (calls Gemini API and streams back tool recommendation)
+- **Right sidebar**: "Browse catalog" heading, category filter pills, scrollable list of tool cards (name, pricing badge FREEMIUM/FREE, one-line description)
+
+## ROADMAP / COURSES PAGE (Year 1–4)
+2x2 responsive grid of year-by-year roadmap cards:
+- **Year 1 — Foundation**: LEARN (Programming Basics, Math), TASKS (Solve 50 basic problems, Build 1 project)
+- **Year 2 — Skill Building**: LEARN (Data Structures, Algorithms), TASKS (Solve 100 problems, Build 2 projects)
+- **Year 3 — Real World Prep**: LEARN (System Design, Databases), TASKS (Build 2-3 full-stack projects, Start applying)
+- **Year 4 — Placement Year**: LEARN (Interview Prep, Resume), TASKS (Apply to 20-30 companies, Network)
+
+## ACCOUNT / PROFILE PAGE
+- "← Back to dashboard" link and "Sign out" button top-right
+- Large circular avatar (colored, initial letter) + display name + email
+- "✏ Edit profile" card: Display name input, read-only Email field, "Save changes" button
+- "Account information" card: Email, Phone, Member since (date), Last sign-in (date + time)
+
+## FUNCTIONAL REQUIREMENTS
+- **Authentication**: Supabase or Firebase auth (sign in/out, profile edit)
+- **Bookmarking**: Heart icon toggles saved state, "My Bookmarks" view
+- **Search**: Filterable/searchable resource directories (search bar in navbar)
+- **AI Integration**: AI Advisor chat calls Gemini API with catalog as context
+- **Dark Mode**: Persisted across sessions
+- **User Stats**: XP, streak days, study minutes tracking
+- **Study Sessions**: Logging with Supabase tables (user_stats, study_sessions, notifications)
+- **Real-time Notifications**: With row-level security tied to user_id
+
+---
+
+## 🗂️ COMPLETE RESOURCE CATALOG — 2,000+ FREE WEBSITES
+
+### 📚 SCHOOL LEARNING (Class 1-12)
+| Website | Link |
+|---------|------|
+| Khan Academy | https://www.khanacademy.org |
+| CK-12 | https://www.ck12.org |
+| DIKSHA | https://diksha.gov.in |
+| ePathshala | https://epathshala.nic.in |
+| NCERT | https://ncert.nic.in |
+| NROER | https://nroer.gov.in |
+| PM eVidya | https://pmevidya.education.gov.in |
+| Swayam Prabha | https://www.swayamprabha.gov.in |
+| Vedantu Free | https://www.vedantu.com |
+| BYJU'S Free | https://byjus.com |
+| Toppr | https://www.toppr.com |
+| Meritnation | https://www.meritnation.com |
+| Brainly | https://brainly.in |
+| Shala Darpan | https://shaladarpan.nic.in |
+
+### 🎓 HIGHER EDUCATION & OPEN COURSEWARE
+| Website | Link |
+|---------|------|
+| SWAYAM | https://swayam.gov.in |
+| NPTEL | https://nptel.ac.in |
+| MIT OpenCourseWare | https://ocw.mit.edu |
+| Harvard CS50 | https://cs50.harvard.edu |
+| Coursera (Free Audit) | https://www.coursera.org |
+| edX (Free Audit) | https://www.edx.org |
+| OpenLearn | https://www.open.edu/openlearn |
+| Saylor Academy | https://www.saylor.org |
+| Open Yale Courses | https://oyc.yale.edu |
+| Academic Earth | https://academicearth.org |
+| FutureLearn | https://www.futurelearn.com |
+| Alison | https://alison.com |
+| OpenStax | https://openstax.org |
+| LibreTexts | https://libretexts.org |
+| Open Textbook Library | https://open.umn.edu/opentextbooks |
+
+### 💻 CODING & PROGRAMMING
+| Website | Link |
+|---------|------|
+| freeCodeCamp | https://www.freecodecamp.org |
+| The Odin Project | https://www.theodinproject.com |
+| GeeksforGeeks | https://www.geeksforgeeks.org |
+| LeetCode | https://leetcode.com |
+| HackerRank | https://www.hackerrank.com |
+| CodeChef | https://www.codechef.com |
+| Codeforces | https://codeforces.com |
+| AtCoder | https://atcoder.jp |
+| TopCoder | https://www.topcoder.com |
+| SPOJ | https://www.spoj.com |
+| Codingame | https://www.codingame.com |
+| Codewars | https://www.codewars.com |
+| Codedex | https://www.codedex.io |
+| Exercism | https://exercism.org |
+| Project Euler | https://projecteuler.net |
+| InterviewBit | https://www.interviewbit.com |
+| Coding Ninjas Studio | https://www.naukri.com/code360 |
+| Codecademy | https://www.codecademy.com |
+| SoloLearn | https://www.sololearn.com |
+| Scrimba | https://scrimba.com |
+| w3schools | https://www.w3schools.com |
+| Code.org | https://code.org |
+| Microsoft MakeCode | https://www.makecode.com |
+| Google Colab | https://colab.research.google.com |
+| HackerEarth | https://www.hackerearth.com |
+| BinarySearch | https://www.binarysearch.com |
+| CodingBat | https://codingbat.com |
+| CSES Problem Set | https://cses.fi/problemset |
+
+### 🌐 WEB DEVELOPMENT
+| Website | Link |
+|---------|------|
+| MDN Web Docs | https://developer.mozilla.org |
+| W3Schools | https://www.w3schools.com |
+| Web.dev | https://web.dev |
+| CSS-Tricks | https://css-tricks.com |
+| JavaScript.info | https://javascript.info |
+| React.dev | https://react.dev |
+| Next.js Docs | https://nextjs.org |
+| Tailwind CSS | https://tailwindcss.com |
+| Vite | https://vitejs.dev |
+| Bootstrap | https://getbootstrap.com |
+| Material-UI | https://mui.com |
+| shadcn/ui | https://ui.shadcn.com |
+| Chakra UI | https://chakra-ui.com |
+| DaisyUI | https://daisyui.com |
+| Refactoring Guru | https://refactoring.guru |
+| Roadmap.sh | https://roadmap.sh |
+| DevDocs | https://devdocs.io |
+| Teach Yourself CS | https://teachyourselfcs.com |
+| Nand2Tetris | https://www.nand2tetris.org |
+| Missing Semester | https://missing.csail.mit.edu |
+
+### 🤖 ARTIFICIAL INTELLIGENCE
+| Website | Link |
+|---------|------|
+| Google AI Studio | https://aistudio.google.com |
+| Gemini | https://gemini.google.com |
+| ChatGPT | https://chatgpt.com |
+| Claude AI | https://claude.ai |
+| Perplexity AI | https://perplexity.ai |
+| Grok | https://grok.com |
+| Copilot | https://copilot.microsoft.com |
+| Poe | https://poe.com |
+| Hugging Face | https://huggingface.co |
+| DeepSeek | https://www.deepseek.com |
+| You.com | https://you.com |
+| Phind | https://phind.com |
+| Replicate | https://replicate.com |
+| Fal.ai | https://fal.ai |
+| DeepLearning.AI | https://www.deeplearning.ai |
+| OpenAI Academy | https://academy.openai.com |
+| Fast.ai | https://www.fast.ai |
+| Kaggle Learn | https://www.kaggle.com/learn |
+| Microsoft Learn AI | https://learn.microsoft.com |
+| IBM SkillsBuild | https://skillsbuild.org |
+| NVIDIA Deep Learning | https://www.nvidia.com/en-us/training |
+
+### 🖼️ AI IMAGE GENERATION
+| Website | Link |
+|---------|------|
+| Ideogram | https://ideogram.ai |
+| Leonardo AI | https://leonardo.ai |
+| Playground | https://playground.com |
+| Mage.Space | https://mage.space |
+| Craiyon | https://www.craiyon.com |
+| ClipDrop | https://clipdrop.co |
+| Canva | https://www.canva.com |
+| Adobe Express | https://www.adobe.com/express |
+| Stability AI | https://stability.ai |
+| Bing Image Creator | https://www.bing.com/images/create |
+
+### 🎥 AI VIDEO GENERATION
+| Website | Link |
+|---------|------|
+| RunwayML | https://runwayml.com |
+| Pika.art | https://pika.art |
+| Haiper | https://haiper.ai |
+| Heygen | https://www.heygen.com |
+| Synthesia | https://www.synthesia.io |
+| InVideo | https://invideo.io |
+| CapCut | https://www.capcut.com |
+| Luma AI | https://luma.ai |
+| Pixverse | https://pixverse.ai |
+| Veed.io | https://www.veed.io |
+
+### 🎙️ AI VOICE & AUDIO
+| Website | Link |
+|---------|------|
+| ElevenLabs | https://elevenlabs.io |
+| Play.ht | https://play.ht |
+| Murf.ai | https://murf.ai |
+| FakeYou | https://fakeyou.com |
+| TTSMaker | https://ttsmaker.com |
+| Coqui.ai | https://coqui.ai |
+| Speechify | https://speechify.com |
+| Uberduck | https://uberduck.ai |
+
+### 📊 DATA SCIENCE & ANALYTICS
+| Website | Link |
+|---------|------|
+| Kaggle | https://www.kaggle.com |
+| Analytics Vidhya | https://www.analyticsvidhya.com |
+| DataCamp | https://www.datacamp.com |
+| Statology | https://www.statology.org |
+| Tableau Learn | https://www.tableau.com/learn |
+| Power BI Learn | https://powerbi.microsoft.com |
+| NumPy | https://numpy.org |
+| Pandas | https://pandas.pydata.org |
+| Matplotlib | https://matplotlib.org |
+| Scikit-learn | https://scikit-learn.org |
+| Machine Learning Mastery | https://www.machinelearningmastery.com |
+| StatQuest | https://www.statquest.org |
+
+### 🔒 CYBERSECURITY
+| Website | Link |
+|---------|------|
+| TryHackMe | https://tryhackme.com |
+| Hack The Box | https://www.hackthebox.com |
+| OverTheWire | https://overthewire.org |
+| PortSwigger Web Security | https://portswigger.net/web-security |
+| OWASP | https://owasp.org |
+| SANS | https://www.sans.org |
+| Cybrary | https://www.cybrary.it |
+| HackerOne | https://www.hackerone.com |
+
+### 📖 RESEARCH & ACADEMIC
+| Website | Link |
+|---------|------|
+| Google Scholar | https://scholar.google.com |
+| OpenAlex | https://openalex.org |
+| Semantic Scholar | https://www.semanticscholar.org |
+| arXiv | https://arxiv.org |
+| CORE | https://core.ac.uk |
+| DOAJ | https://doaj.org |
+| BASE | https://www.base-search.net |
+| PubMed | https://pubmed.ncbi.nlm.nih.gov |
+| Zenodo | https://zenodo.org |
+| Figshare | https://figshare.com |
+| OSF | https://osf.io |
+| DBLP | https://dblp.org |
+| CrossRef | https://www.crossref.org |
+| ResearchGate | https://www.researchgate.net |
+| SSRN | https://www.ssrn.com |
+| Shodhganga | https://shodhganga.inflibnet.ac.in |
+
+### 📄 RESUME BUILDERS
+| Website | Link |
+|---------|------|
+| Reactive Resume | https://rxresu.me |
+| FlowCV | https://flowcv.com |
+| Canva Resume | https://www.canva.com/resumes |
+| Novoresume | https://novoresume.com |
+| Resume.io | https://resume.io |
+| Kickresume | https://www.kickresume.com |
+| Zety | https://zety.com |
+| Enhancv | https://enhancv.com |
+| Resume Genius | https://resumegenius.com |
+
+### 💼 JOB PORTALS
+| Website | Link |
+|---------|------|
+| LinkedIn Jobs | https://www.linkedin.com/jobs |
+| Indeed | https://in.indeed.com |
+| Naukri | https://www.naukri.com |
+| Foundit | https://www.foundit.in |
+| Apna | https://apna.co |
+| Cutshort | https://cutshort.io |
+| Wellfound | https://wellfound.com |
+| Freshersworld | https://www.freshersworld.com |
+| Internshala | https://internshala.com |
+| Hirist | https://www.hirist.com |
+
+### 🏛️ GOVERNMENT JOBS
+| Website | Link |
+|---------|------|
+| SSC | https://ssc.gov.in |
+| UPSC | https://upsc.gov.in |
+| IBPS | https://ibps.in |
+| RRB | https://rrbcdg.gov.in |
+| NCS | https://ncs.gov.in |
+| Employment News | https://employmentnews.gov.in |
+| AP PSC | https://psc.ap.gov.in |
+| TS PSC | https://www.tspsc.gov.in |
+| Indian Army | https://joinindianarmy.nic.in |
+| Indian Navy | https://www.joinindiannavy.gov.in |
+| Indian Coast Guard | https://www.joinindiancoastguard.cdac.in |
+
+### 🏆 COMPETITIONS & HACKATHONS
+| Website | Link |
+|---------|------|
+| Unstop | https://unstop.com |
+| Devpost | https://devpost.com |
+| MLH | https://mlh.io |
+| Kaggle Competitions | https://www.kaggle.com/competitions |
+| HackerEarth Challenges | https://www.hackerearth.com/challenges |
+| Codeforces Contests | https://codeforces.com/contests |
+| TopCoder Challenges | https://www.topcoder.com/challenges |
+
+### 🎓 SCHOLARSHIPS
+| Website | Link |
+|---------|------|
+| National Scholarship Portal | https://scholarships.gov.in |
+| Buddy4Study | https://www.buddy4study.com |
+| Vidya Lakshmi | https://www.vidyalakshmi.co.in |
+| AICTE | https://www.aicte-india.org |
+| Ministry of Education | https://www.education.gov.in |
+
+### 📚 FREE BOOKS & EBOOKS
+| Website | Link |
+|---------|------|
+| Internet Archive | https://archive.org |
+| Open Library | https://openlibrary.org |
+| Project Gutenberg | https://www.gutenberg.org |
+| Bookboon | https://bookboon.com |
+| ManyBooks | https://manybooks.net |
+| Standard Ebooks | https://standardebooks.org |
+| PDF Drive | https://www.pdfdrive.com |
+
+### 🎥 YOUTUBE LEARNING CHANNELS
+| Channel | Link |
+|---------|------|
+| Khan Academy India | https://www.youtube.com/c/KhanAcademyIndia |
+| Unacademy | https://www.youtube.com/c/Unacademy |
+| Physics Wallah | https://www.youtube.com/c/PhysicsWallah |
+| Magnet Brains | https://www.youtube.com/c/MagnetBrainsEducation |
+| Study IQ Education | https://www.youtube.com/c/StudyIQEducation |
+| Adda247 | https://www.youtube.com/c/Adda247 |
+| Edumantra | https://www.youtube.com/c/Edumantra |
+| freeCodeCamp | https://www.youtube.com/c/Freecodecamp |
+| NPTEL | https://www.youtube.com/c/NPTEL |
+| MIT OpenCourseWare | https://www.youtube.com/c/MITOCW |
+
+### 🎨 DESIGN RESOURCES
+| Website | Link |
+|---------|------|
+| Figma | https://www.figma.com |
+| Penpot | https://penpot.app |
+| Canva | https://www.canva.com |
+| Dribbble | https://dribbble.com |
+| Behance | https://www.behance.net |
+| Uizard | https://uizard.io |
+| Icons8 | https://icons8.com |
+| Undraw | https://undraw.co |
+| Storyset | https://storyset.com |
+| Flaticon | https://www.flaticon.com |
+| Awwwards | https://www.awwwards.com |
+
+### 🛠️ DEVELOPER TOOLS
+| Website | Link |
+|---------|------|
+| GitHub | https://github.com |
+| GitLab | https://gitlab.com |
+| Bitbucket | https://bitbucket.org |
+| Vercel | https://vercel.com |
+| Netlify | https://netlify.com |
+| Render | https://render.com |
+| Railway | https://railway.app |
+| Firebase | https://firebase.google.com |
+| Supabase | https://supabase.com |
+| Replit | https://replit.com |
+| StackBlitz | https://stackblitz.com |
+| CodeSandbox | https://codesandbox.io |
+
+### ☁️ CLOUD & DEVOPS
+| Website | Link |
+|---------|------|
+| AWS Training | https://aws.amazon.com/training |
+| Microsoft Learn | https://learn.microsoft.com |
+| Google Cloud Learn | https://cloud.google.com/learn |
+| Cloud Skills Boost | https://cloudskillsboost.google |
+| Red Hat | https://www.redhat.com |
+| DigitalOcean Community | https://www.digitalocean.com/community |
+| Docker | https://www.docker.com |
+| Kubernetes | https://kubernetes.io |
+
+### 📈 DIGITAL MARKETING
+| Website | Link |
+|---------|------|
+| Google Digital Garage | https://learndigital.withgoogle.com |
+| HubSpot Academy | https://academy.hubspot.com |
+| Moz | https://moz.com |
+| Ahrefs | https://ahrefs.com |
+| Semrush | https://semrush.com |
+| Mailchimp | https://mailchimp.com |
+
+### 💰 FINANCE & STOCK MARKET
+| Website | Link |
+|---------|------|
+| Zerodha Varsity | https://zerodha.com/varsity |
+| Investopedia | https://www.investopedia.com |
+| Moneycontrol | https://www.moneycontrol.com |
+| Screener | https://www.screener.in |
+| Tickertape | https://www.tickertape.in |
+
+### 🌍 STUDY ABROAD
+| Website | Link |
+|---------|------|
+| IDP | https://www.idp.com |
+| EduCanada | https://www.educanada.ca |
+| British Council | https://study-uk.britishcouncil.org |
+| Study in Australia | https://www.studyinaustralia.gov.au |
+| DAAD | https://www.daad.de |
+| Education USA | https://educationusa.state.gov |
+
+### 🎯 INTERVIEW PREPARATION
+| Website | Link |
+|---------|------|
+| Pramp | https://www.pramp.com |
+| Interviewing.io | https://www.interviewing.io |
+| Exponent | https://www.exponent.com |
+| GeeksforGeeks Interview | https://www.geeksforgeeks.org/interview-preparation |
+| HackerRank Interview | https://www.hackerrank.com/interview |
+
+### 📱 APP DEVELOPMENT
+| Website | Link |
+|---------|------|
+| Android Developers | https://developer.android.com |
+| Apple Developer | https://developer.apple.com |
+| Flutter | https://flutter.dev |
+| React Native | https://reactnative.dev |
+| Ionic | https://ionicframework.com |
+| Kotlin | https://kotlinlang.org |
+| Expo | https://expo.dev |
+| Capacitor | https://capacitorjs.com |
+
+### 🎮 GAME DEVELOPMENT
+| Website | Link |
+|---------|------|
+| Unity Learn | https://learn.unity.com |
+| Unreal Engine | https://www.unrealengine.com/learn |
+| Godot | https://godotengine.org |
+| Phaser | https://phaser.io |
+| Scratch | https://scratch.mit.edu |
+
+### 🧠 AI STUDY TOOLS
+| Website | Link |
+|---------|------|
+| Google NotebookLM | https://notebooklm.google.com |
+| QuillBot | https://quillbot.com |
+| ChatPDF | https://www.chatpdf.com |
+| Gamma AI | https://gamma.app |
+| AskCodi | https://www.askcodi.com |
+| Grammarly | https://www.grammarly.com |
+| Jenni AI | https://jenni.ai |
+| Notion AI | https://www.notion.so |
+
+---
+
+## DATABASE SCHEMA (Supabase)
+
+### Resources Table
+\`\`\`sql
+CREATE TABLE resources (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  url TEXT NOT NULL,
+  description TEXT,
+  category TEXT NOT NULL,
+  subcategory TEXT,
+  target_audience TEXT[],
+  is_free BOOLEAN DEFAULT true,
+  has_certificate BOOLEAN DEFAULT false,
+  languages TEXT[] DEFAULT ARRAY['English'],
+  logo_url TEXT,
+  rating FLOAT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+\`\`\`
+
+### User Bookmarks Table
+\`\`\`sql
+CREATE TABLE bookmarks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  resource_id UUID REFERENCES resources(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, resource_id)
+);
+\`\`\`
+
+### User Stats Table
+\`\`\`sql
+CREATE TABLE user_stats (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+  xp INTEGER DEFAULT 0,
+  streak_days INTEGER DEFAULT 0,
+  study_minutes INTEGER DEFAULT 0,
+  resources_bookmarked INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+\`\`\`
+
+### Study Sessions Table
+\`\`\`sql
+CREATE TABLE study_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  resource_id UUID REFERENCES resources(id),
+  duration_minutes INTEGER,
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+\`\`\`
+
+### Notifications Table
+\`\`\`sql
+CREATE TABLE notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+\`\`\`
+
+### ROW LEVEL SECURITY POLICIES
+\`\`\`sql
+-- Enable RLS
+ALTER TABLE resources ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bookmarks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_stats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE study_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+
+-- Policies for authenticated users
+CREATE POLICY "Users can view all resources" ON resources FOR SELECT USING (true);
+CREATE POLICY "Users can manage their own bookmarks" ON bookmarks FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage their own stats" ON user_stats FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage their own sessions" ON study_sessions FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage their own notifications" ON notifications FOR ALL USING (auth.uid() = user_id);
+\`\`\`
+
+## BUILD INSTRUCTIONS
+- Start with: Home page, navbar, and Entrance Exam Hub
+- Scaffold remaining pages: Using same card/list patterns
+- Implement Authentication: Supabase Auth with sign in/out, profile edit
+- Add Bookmarking: Heart icon toggles saved state, "My Bookmarks" view
+- Add Search: Filterable/searchable resource directories
+- Integrate AI: AI Advisor chat calls Gemini API with catalog as context
+- Add Dark Mode: Toggle persisted across sessions
+- Implement 3D Scene: Three.js for Immersive page
+
+## DEPLOYMENT
+- Frontend: Vercel or Netlify
+- Backend: Supabase (auth + database)
+- AI API: Google Gemini API
+
+## FINAL GOAL
+Create "Learn With Suresh" as the largest free student resource hub in India with:
+- 2,000+ curated free resources
+- 50+ categories
+- AI-powered recommendations
+- Student tracking & gamification
+- Responsive & accessible
+- Dark mode support
+- Multi-language ready
+`;
+
+export const nextRoundPrepCorePrompt = `You are the core AI engine for "Next Round Prep," an advanced, interactive AI interview preparation coach. Your mission is to help candidates confidently pass their next round of job interviews (technical coding, system design, product management, or behavioral/HR rounds).
+Act as an expert, empathetic, yet rigorous interviewer from a top-tier tech company.
+
+## 1. CORE FUNCTIONALITIES TO SIMULATE
+Your system must support the following three distinct operation modes depending on what the user asks for:
+
+### Mode A: Interactive Mock Interview (The Core Engine)
+- Ask the user for their target role, target company, and the type of interview round (e.g., Senior Software Engineer at Google, System Design Round).
+- Conduct the interview one question at a time. Do not output a list of questions all at once.
+- Wait for the user's response, ask clarifying questions if their answer is too vague, and push them to optimize their solution (e.g., "What is the time complexity of that approach? Can we do better?").
+- Conclude the mock interview after 3-4 turns and provide a detailed diagnostic report.
+
+### Mode B: Resume & Job Description (JD) Gap Analysis
+- When a user provides their resume text and a specific job description, analyze them side-by-side.
+- Highlight key technical gaps, missing keywords, and experience areas they are likely to be grilled on during the next round.
+- Generate a custom set of 5 highly tailored practice questions based purely on those gaps.
+
+### Mode C: Instant Answer Feedback & Deconstruction
+- If a user inputs a specific interview question and their drafted answer, evaluate it rigorously.
+- Break down their answer using industry frameworks (e.g., the STAR method for behavioral answers: Situation, Task, Action, Result).
+- Provide a rewritten, high-impact version of their answer to maximize its appeal to recruiters.
+
+## 2. OUTPUT FORMATTING & TONE
+- **Tone**: Professional, encouraging, highly objective, and practical.
+- **Structure**: Use clean Markdown formatting, bold headers, and structured bullet points.
+- **Feedback Matrix**: Whenever providing evaluation or final mock interview reports, always break it down into:
+  - **Strengths**: What they communicated beautifully.
+  - **Weaknesses/Gaps**: Technical or behavioral red flags.
+  - **Actionable Fixes**: Exactly what to say or change next time to succeed.
+
+## 3. INITIALIZATION BEHAVIOR
+- Start the conversation by giving a brief, welcoming greeting as the "Next Round Prep AI Coach." Prompt the user by asking:
+  "Welcome to Next Round Prep! To get started on passing your next interview round, please tell me: What is your target role, target company, and what kind of interview round are we prepping for today? (Alternatively, share your resume and a job description for a gap analysis!)"
+`;
+
+export const nextRoundPrepBuildPrompt = `# NextRoundPrep — Google AI Studio Build Prompt
+
+Build a full-stack, AI-powered career and exam preparation web platform for Indian students called NextRoundPrep. Use React + TypeScript + Tailwind CSS for the frontend, with a dark glassmorphism visual style (deep navy/black backgrounds, frosted-glass cards, neon-purple/blue accent gradients, soft glow borders). Integrate the Gemini API for all AI features. Use JWT-based authentication for user accounts.
+
+Overall Architecture
+Build this as a multi-hub platform with a central dashboard/landing page that links out to seven distinct hub modules. Each hub is its own route/section with its own UI, but they share a common navbar, auth state, and design system.
+
+1. Career Hub
+- AI Mock Interview simulator: user selects a role/domain, Gemini generates realistic interview questions one at a time, user answers (text input), Gemini gives structured feedback (strengths, weaknesses, score) after each answer and a final summary report.
+- AI Resume Reviewer: user pastes or uploads resume text, Gemini analyzes it and returns section-by-section feedback (formatting, keyword optimization for ATS, impact statements, suggested rewrites).
+- AI Career Roadmap Generator: user inputs current education level, interests, and target role; Gemini generates a step-by-step roadmap (skills to learn, certifications, timeline, milestone checklist) rendered as a visual timeline/stepper UI.
+
+2. EAMCET Hub
+- Exam prep portal for the EAMCET entrance exam.
+- MCQ practice mode: subject/topic selector, timed quiz interface, instant scoring, review-mistakes screen.
+- AI doubt-solving chat: student types a question about any EAMCET topic, Gemini responds with a clear step-by-step explanation.
+- Progress tracking: store quiz scores over time, show a simple analytics view (accuracy by subject, attempts over time).
+
+3. Free Education Hub
+- An aggregator/directory of free educational resources (courses, YouTube channels, PDFs, websites) organized by category/subject.
+- Searchable and filterable card grid layout.
+- Each resource card shows title, source, category tag, and an external link.
+
+4. Remote Jobs Board
+- A job listing board focused on remote roles suitable for students/early-career candidates.
+- Filterable by role type, experience level, and category.
+- Each listing as a card with title, company, tags, and apply link.
+- (Optional AI feature): "Am I a fit?" button that uses Gemini to compare a pasted resume/profile against the job description and gives a fit score + gap analysis.
+
+5. StudentOS
+- A personal productivity dashboard for students: task/to-do list, study timer (Pomodoro-style), and a notes section.
+- Simple local/account-persisted state (tasks, notes, timer sessions).
+- Clean widget-based dashboard layout.
+
+6. New Age Schools
+- A directory/showcase section highlighting modern schools or educational institutions.
+- Card-based listing with filters (location, board/curriculum type, features).
+- Detail view per school with description and key highlights.
+
+7. Learn with Suresh
+- A free educational content hub with a distinct dark neon/purple aesthetic (slightly different accent from the main app to feel like a sub-brand).
+- Organized lessons/articles/video embeds by subject.
+- Simple content browser with category sidebar and content viewer.
+
+Shared / Platform-Level Requirements
+- Auth: Sign up / log in with JWT, persisted session, protected routes for hubs that need saved progress (EAMCET Hub progress, StudentOS data, Career Hub history).
+- Navbar: Persistent top navigation with links to all seven hubs, user avatar/menu, login/logout.
+- Landing/Dashboard page: Hero section explaining the platform, then a grid of seven cards (one per hub) with icon, short description, and "Enter" CTA — this is the main entry point.
+- Design system: Dark glassmorphism throughout — semi-transparent card backgrounds with backdrop-blur, subtle border glow, gradient accent buttons, smooth hover/scale transitions, rounded-2xl corners, modern sans-serif typography (e.g. Inter/Poppins-style).
+- Responsive: Fully responsive for mobile and desktop.
+- Gemini integration: Centralize Gemini API calls in a shared service/hook so all AI features (mock interview, resume review, roadmap, doubt-solving, job-fit analysis) reuse the same client setup, with loading states and error handling on every AI call.
+`;
+
+export const nextRoundPrepFirebasePrompt = `# Google AI Studio Prompt — Firebase DB + Auth Setup
+
+I'm building a web app called NextRoundPrep — an AI-powered career and exam prep platform for Indian students, with multiple hub modules (Career Hub, EAMCET Hub, Free Education Hub, Remote Jobs Board, StudentOS, New Age Schools, Learn with Suresh).
+Stack: React + TypeScript + Tailwind CSS, dark glassmorphism UI, currently using JWT auth.
+I want you to set up Firebase as the backend — Firestore for the database and Firebase Authentication for login. Please generate:
+
+- Firebase project setup
+- firebase.ts config file (using environment variables, not hardcoded keys)
+- Required npm packages and install commands
+- Authentication
+  - Email/Password sign up and login
+  - Google Sign-In (OAuth)
+  - Auth context/hook (useAuth) that exposes user, loading, login, signup, logout
+  - Protected route wrapper component for React Router
+  - Password reset flow
+- Firestore database structure
+  - users collection — profile data (name, email, phone, exam preferences, created hub progress)
+  - progress collection — per-hub progress tracking (linked to user UID)
+  - mockInterviews collection — stored interview sessions and AI feedback
+  - Suggested security rules for each collection (users can only read/write their own data)
+- Integration code
+  - React hooks/functions for CRUD operations (add, get, update, delete) on Firestore documents
+  - Real-time listener example using onSnapshot
+  - Error handling patterns
+- Migration notes
+  - Short explanation of how to replace my current JWT auth calls with the new Firebase Auth hooks, so I can swap it into an existing React + TypeScript codebase with minimal breakage
+`;
+

@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode, useRef, useState, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Html } from "@react-three/drei";
+import { Html, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 interface Props {
@@ -246,6 +246,13 @@ export default function CareerPathCanvas({ activeGoal, onSelectGoal }: CareerPat
           <ambientLight intensity={0.4} color="#1e1b4b" />
           <directionalLight position={[0, 4, 3]} intensity={0.8} color="#ffffff" />
           <pointLight position={[0, 0, 2]} intensity={1.2} color="#a855f7" />
+
+          <OrbitControls 
+            enableZoom={false} 
+            enablePan={false} 
+            maxPolarAngle={Math.PI / 1.5} 
+            minPolarAngle={Math.PI / 3} 
+          />
 
           {/* Connected Lines */}
           {links.map((link, idx) => (

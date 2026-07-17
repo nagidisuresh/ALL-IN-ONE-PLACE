@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Map, Sparkles, BookOpen, CheckSquare, Award, ExternalLink, 
   HelpCircle, CheckCircle2, Circle, Trophy, ListTodo, AlertCircle,
@@ -203,6 +203,27 @@ export default function RoadmapView() {
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
   const [quizSubmitted, setQuizSubmitted] = useState<Record<string, boolean>>({});
 
+  // Load active roadmap from local storage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("nextroundprep_active_roadmap");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.steps) {
+          setRoadmap(parsed);
+          setGoal(parsed.goal || parsed.title || "");
+          setLevel(parsed.level || "Beginner");
+          setTimeline(parsed.timeline || "12 weeks");
+          if (parsed.steps.length > 0) {
+            setActiveStepId(parsed.steps[0].id);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to parse saved roadmap", e);
+      }
+    }
+  }, []);
+
   const roleChips = [
     "Frontend Developer", 
     "Backend Developer", 
@@ -221,6 +242,7 @@ export default function RoadmapView() {
     const matched = premadeRoadmaps[selectedRole];
     if (matched) {
       setRoadmap(matched);
+      localStorage.setItem("nextroundprep_active_roadmap", JSON.stringify(matched));
       if (matched.steps && matched.steps.length > 0) {
         setActiveStepId(matched.steps[0].id);
       }
@@ -230,6 +252,7 @@ export default function RoadmapView() {
     } else {
       // Clear roadmap if we click a custom node that requires generation
       setRoadmap(null);
+      localStorage.removeItem("nextroundprep_active_roadmap");
       setActiveStepId(null);
     }
   };
@@ -261,6 +284,7 @@ export default function RoadmapView() {
 
       const data: Roadmap = await response.json();
       setRoadmap(data);
+      localStorage.setItem("nextroundprep_active_roadmap", JSON.stringify(data));
       if (data.steps && data.steps.length > 0) {
         setActiveStepId(data.steps[0].id);
       }
@@ -315,7 +339,12 @@ export default function RoadmapView() {
     
     const updatedSteps = roadmap.steps.map(step => {
       if (step.id === stepId) {
-        return { ...step, completed: !step.completed };
+        const nextCompleted = !step.completed;
+        return { 
+          ...step, 
+          completed: nextCompleted,
+          completedAt: nextCompleted ? new Date().toISOString() : undefined
+        };
       }
       return step;
     });
@@ -327,7 +356,10 @@ export default function RoadmapView() {
       triggerConfetti();
     }
     
-    setRoadmap({ ...roadmap, steps: updatedSteps });
+    const updatedRoadmap = { ...roadmap, steps: updatedSteps };
+    setRoadmap(updatedRoadmap);
+    localStorage.setItem("nextroundprep_active_roadmap", JSON.stringify(updatedRoadmap));
+    window.dispatchEvent(new CustomEvent("update-user-points"));
   };
 
   // Answer quiz for a specific step

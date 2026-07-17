@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "./LanguageProvider";
 
 interface SureshHeroBannerProps {
   onNavigate: (tabId: string) => void;
@@ -144,6 +145,7 @@ function renderSureshPortrait(imageError: boolean, setImageError: (v: boolean) =
 
 export default function SureshHeroBanner({ onNavigate, setPlatformMode }: SureshHeroBannerProps) {
   const [imageError, setImageError] = useState(false);
+  const { language, t } = useLanguage();
 
   const handleStartLearning = () => {
     if (setPlatformMode) {
@@ -175,17 +177,21 @@ export default function SureshHeroBanner({ onNavigate, setPlatformMode }: Suresh
           {/* Badge */}
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-500/20 text-[#fbbf24] text-[10px] sm:text-xs font-bold tracking-wider mb-4 bg-amber-500/5 uppercase font-mono">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            Learn with Suresh
+            {t("sureshBadge")}
           </div>
 
           {/* Heading */}
           <h2 className="text-3xl md:text-4xl font-black mb-3 tracking-tight font-sans text-white">
-            Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500 font-extrabold italic">Suresh</span>
+            {language === "hi" ? (
+              <span>नमस्ते, मैं <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500 font-extrabold italic">सुरेश</span> हूँ</span>
+            ) : (
+              <span>Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500 font-extrabold italic">Suresh</span></span>
+            )}
           </h2>
 
           {/* Description */}
           <p className="text-gray-400 text-xs sm:text-sm leading-relaxed max-w-2xl mb-6 font-sans">
-            I built <strong className="text-gray-200 font-semibold">Learn With Suresh</strong> to put the world's best free learning resources in one place — so every student in India can grow without paying a rupee.
+            {t("sureshDesc")}
           </p>
 
           {/* Buttons */}
@@ -194,7 +200,7 @@ export default function SureshHeroBanner({ onNavigate, setPlatformMode }: Suresh
               onClick={handleStartLearning}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#fbbf24] hover:bg-amber-500 text-black font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/10 hover:shadow-amber-500/20 transition-all transform hover:-translate-y-0.5 cursor-pointer"
             >
-              <span>Start Learning</span>
+              <span>{t("startLearning")}</span>
               <ArrowRight className="w-4 h-4 stroke-[3px]" />
             </button>
 
@@ -202,7 +208,7 @@ export default function SureshHeroBanner({ onNavigate, setPlatformMode }: Suresh
               onClick={handleAskAI}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 border border-white/10 hover:border-white/20 hover:bg-slate-850 text-white font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md"
             >
-              <span>🤖 Ask the AI Advisor</span>
+              <span>{t("askAI")}</span>
             </button>
           </div>
         </div>
