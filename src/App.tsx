@@ -465,57 +465,60 @@ export default function App() {
           </div>
         )}
 
-        {/* Profile Dashboard Modal */}
-        {user && (
-          <ProfileDashboardModal
-            isOpen={isProfileOpen}
-            onClose={() => setIsProfileOpen(false)}
-            user={user}
-            onUserUpdate={(updated) => {
-              setUser(prev => prev ? { ...prev, ...updated } : null);
-              const cache = localStorage.getItem("nextroundprep_user");
-              if (cache) {
-                try {
-                  const parsed = JSON.parse(cache);
-                  localStorage.setItem("nextroundprep_user", JSON.stringify({ ...parsed, ...updated }));
-                } catch (e) {
-                  localStorage.setItem("nextroundprep_user", JSON.stringify(updated));
+        {/* Modals and Palettes wrapped in Suspense for dynamic imports */}
+        <React.Suspense fallback={null}>
+          {/* Profile Dashboard Modal */}
+          {user && (
+            <ProfileDashboardModal
+              isOpen={isProfileOpen}
+              onClose={() => setIsProfileOpen(false)}
+              user={user}
+              onUserUpdate={(updated) => {
+                setUser(prev => prev ? { ...prev, ...updated } : null);
+                const cache = localStorage.getItem("nextroundprep_user");
+                if (cache) {
+                  try {
+                    const parsed = JSON.parse(cache);
+                    localStorage.setItem("nextroundprep_user", JSON.stringify({ ...parsed, ...updated }));
+                  } catch (e) {
+                    localStorage.setItem("nextroundprep_user", JSON.stringify(updated));
+                  }
                 }
-              }
-            }}
-            onNavigateToRoadmap={() => {
-              setIsProfileOpen(false);
-              setPlatformMode("career");
-              setActiveTab("roadmap");
-            }}
-            userPoints={userPoints}
+              }}
+              onNavigateToRoadmap={() => {
+                setIsProfileOpen(false);
+                setPlatformMode("career");
+                setActiveTab("roadmap");
+              }}
+              userPoints={userPoints}
+            />
+          )}
+
+          {/* Global Command Palette */}
+          {user && (
+            <CommandPalette
+              isOpen={isCommandPaletteOpen}
+              onClose={() => setIsCommandPaletteOpen(false)}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              setPlatformMode={setPlatformMode}
+            />
+          )}
+
+          {/* Newsletter Subscription Success Modal */}
+          <NewsletterSuccessModal
+            isOpen={isSuccessModalOpen}
+            onClose={() => setIsSuccessModalOpen(false)}
+            email={subscriberEmail}
           />
-        )}
 
-        {/* Global Command Palette */}
-        {user && (
-          <CommandPalette
-            isOpen={isCommandPaletteOpen}
-            onClose={() => setIsCommandPaletteOpen(false)}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            setPlatformMode={setPlatformMode}
+          {/* Legal Modal for Agreements & Accessibility */}
+          <LegalModal
+            isOpen={isLegalOpen}
+            onClose={() => setIsLegalOpen(false)}
+            initialSection={legalSection}
           />
-        )}
-
-        {/* Newsletter Subscription Success Modal */}
-        <NewsletterSuccessModal
-          isOpen={isSuccessModalOpen}
-          onClose={() => setIsSuccessModalOpen(false)}
-          email={subscriberEmail}
-        />
-
-        {/* Legal Modal for Agreements & Accessibility */}
-        <LegalModal
-          isOpen={isLegalOpen}
-          onClose={() => setIsLegalOpen(false)}
-          initialSection={legalSection}
-        />
+        </React.Suspense>
 
          {/* Main Container */}
         <main className={`relative z-10 ${user ? "pt-28" : "pt-24"}`}>
