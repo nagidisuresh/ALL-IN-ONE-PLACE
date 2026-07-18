@@ -7,39 +7,39 @@ import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { auth, db } from "./lib/firebase";
 import { useLanguage } from "./components/LanguageProvider";
 import { useTheme } from "./components/ThemeProvider";
-import InterviewView from "./components/InterviewView";
-import RoadmapView from "./components/RoadmapView";
-import JobPrepView from "./components/JobPrepView";
-import ResumeView from "./components/ResumeView";
-import PortfolioView from "./components/PortfolioView";
-import ToolsDirectoryView from "./components/ToolsDirectoryView";
-import ChatView from "./components/ChatView";
-import FreePlatformsView from "./components/FreePlatformsView";
-import RemoteJobsView from "./components/RemoteJobsView";
-import AboutView from "./components/AboutView";
-import TcsNqtView from "./components/TcsNqtView";
-import FoundersPrimeView from "./components/FoundersPrimeView";
-import ThreeDShowcaseView from "./components/ThreeDShowcaseView";
-import LearnWithSureshView from "./components/LearnWithSureshView";
-import DeveloperRoadmapsView from "./components/DeveloperRoadmapsView";
-import ProfileDashboardModal from "./components/ProfileDashboardModal";
-import GlassOrbBackground from "./components/GlassOrbBackground";
-import CommandPalette from "./components/CommandPalette";
+const InterviewView = React.lazy(() => import("./components/InterviewView"));
+const RoadmapView = React.lazy(() => import("./components/RoadmapView"));
+const JobPrepView = React.lazy(() => import("./components/JobPrepView"));
+const ResumeView = React.lazy(() => import("./components/ResumeView"));
+const PortfolioView = React.lazy(() => import("./components/PortfolioView"));
+const ToolsDirectoryView = React.lazy(() => import("./components/ToolsDirectoryView"));
+const ChatView = React.lazy(() => import("./components/ChatView"));
+const FreePlatformsView = React.lazy(() => import("./components/FreePlatformsView"));
+const RemoteJobsView = React.lazy(() => import("./components/RemoteJobsView"));
+const AboutView = React.lazy(() => import("./components/AboutView"));
+const TcsNqtView = React.lazy(() => import("./components/TcsNqtView"));
+const FoundersPrimeView = React.lazy(() => import("./components/FoundersPrimeView"));
+const ThreeDShowcaseView = React.lazy(() => import("./components/ThreeDShowcaseView"));
+const LearnWithSureshView = React.lazy(() => import("./components/LearnWithSureshView"));
+const DeveloperRoadmapsView = React.lazy(() => import("./components/DeveloperRoadmapsView"));
+const ProfileDashboardModal = React.lazy(() => import("./components/ProfileDashboardModal"));
+const GlassOrbBackground = React.lazy(() => import("./components/GlassOrbBackground"));
+const CommandPalette = React.lazy(() => import("./components/CommandPalette"));
 
 // Import EAMCET components
-import EAMCETHome from "./components/EAMCETHome";
-import EAMCETPlans from "./components/EAMCETPlans";
-import EAMCETPractice from "./components/EAMCETPractice";
-import EAMCETResources from "./components/EAMCETResources";
-import EAMCETTips from "./components/EAMCETTips";
-import EAMCETCounseling from "./components/EAMCETCounseling";
-import EAMCETProfile from "./components/EAMCETProfile";
-import EAMCETAITutor from "./components/EAMCETAITutor";
-import StudentOSView from "./components/StudentOSView";
-import NewAgeSchoolsView from "./components/NewAgeSchoolsView";
-import NewsletterSuccessModal from "./components/NewsletterSuccessModal";
-import LegalModal from "./components/LegalModal";
-import HelpCenterView from "./components/HelpCenterView";
+const EAMCETHome = React.lazy(() => import("./components/EAMCETHome"));
+const EAMCETPlans = React.lazy(() => import("./components/EAMCETPlans"));
+const EAMCETPractice = React.lazy(() => import("./components/EAMCETPractice"));
+const EAMCETResources = React.lazy(() => import("./components/EAMCETResources"));
+const EAMCETTips = React.lazy(() => import("./components/EAMCETTips"));
+const EAMCETCounseling = React.lazy(() => import("./components/EAMCETCounseling"));
+const EAMCETProfile = React.lazy(() => import("./components/EAMCETProfile"));
+const EAMCETAITutor = React.lazy(() => import("./components/EAMCETAITutor"));
+const StudentOSView = React.lazy(() => import("./components/StudentOSView"));
+const NewAgeSchoolsView = React.lazy(() => import("./components/NewAgeSchoolsView"));
+const NewsletterSuccessModal = React.lazy(() => import("./components/NewsletterSuccessModal"));
+const LegalModal = React.lazy(() => import("./components/LegalModal"));
+const HelpCenterView = React.lazy(() => import("./components/HelpCenterView"));
 import GuestLockWall from "./components/GuestLockWall";
 import { 
   subscribeMockInterviews, 
@@ -303,6 +303,7 @@ export default function App() {
   // Real-time synchronization of Mock Interviews and other user data
   useEffect(() => {
     if (!user || user.isAnonymous) return;
+    if (!auth.currentUser) return;
 
     // 1. Subscribe to mock interviews from Firestore
     const unsubscribeInterviews = subscribeMockInterviews(user.uid, async (firestoreInterviews) => {
@@ -430,7 +431,9 @@ export default function App() {
       {/* Background Glow Bleed */}
       <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-[#22d3ee]/10 via-[#ec4899]/10 to-transparent rounded-full filter blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#a855f7]/5 rounded-full filter blur-[120px] pointer-events-none" />
-      <GlassOrbBackground />
+      <React.Suspense fallback={null}>
+        <GlassOrbBackground />
+      </React.Suspense>
 
       <div className="pb-24">
         {/* Persistent Top Navigation Bar */}
@@ -516,7 +519,13 @@ export default function App() {
 
          {/* Main Container */}
         <main className={`relative z-10 ${user ? "pt-28" : "pt-24"}`}>
-          {platformMode === "student-os" ? (
+          <React.Suspense fallback={
+            <div className="flex flex-col items-center justify-center min-h-[40vh] space-y-4">
+              <div className="w-10 h-10 border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+              <p className="text-gray-400 text-xs font-mono">Loading module...</p>
+            </div>
+          }>
+            {platformMode === "student-os" ? (
             <ProtectedRoute user={user} onLoginSuccess={handleLoginSuccess} onSignUpRedirect={() => setActiveTab("auth")} onHomeRedirect={() => { setPlatformMode("learn-with-suresh"); setActiveTab("learn-suresh-home"); }} isTabProtectedForGuest={true}>
               <StudentOSView />
             </ProtectedRoute>
@@ -685,6 +694,7 @@ export default function App() {
               <EAMCETProfile />
             </ProtectedRoute>
           )}
+          </React.Suspense>
         </main>
       </div>
 

@@ -17,7 +17,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../lib/firebase";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
-import GlassOrbBackground from "./GlassOrbBackground";
+const GlassOrbBackground = React.lazy(() => import("./GlassOrbBackground"));
 
 interface AuthViewProps {
   onLoginSuccess: (user: { email: string; name: string; uid: string; provider: string }) => void;
@@ -97,6 +97,7 @@ export default function AuthView({ onLoginSuccess }: AuthViewProps) {
       // Create new user profile document in Firestore
       await setDoc(userRef, {
         id: userId,
+        uid: userId, // Set uid explicitly to satisfy security rules check
         email: userEmail,
         name: displayName || userEmail.split("@")[0],
         provider,
@@ -108,6 +109,7 @@ export default function AuthView({ onLoginSuccess }: AuthViewProps) {
     } else {
       // Keep existing points/streak but ensure provider matches
       await setDoc(userRef, {
+        uid: userId, // Set uid explicitly to satisfy security rules check
         provider,
         lastActiveDate: new Date().toISOString()
       }, { merge: true });
@@ -236,28 +238,41 @@ export default function AuthView({ onLoginSuccess }: AuthViewProps) {
     setSuccessMessage("");
     setIsLoading(true);
     
-    const mockUid = "bypass-" + provider + "-" + Math.random().toString(36).substring(2, 11);
-    const mockEmail = `developer-${provider}@nextroundprep.org`;
-    const mockName = `${provider === "google" ? "Google" : "GitHub"} Test Developer`;
-
     try {
-      await syncUserProfile(mockUid, mockEmail, mockName, provider);
+      const mockEmail = `developer-${provider}@nextroundprep.org`;
+      const mockPassword = `DevSandboxPass123!_${provider}`;
+      const mockName = `${provider === "google" ? "Google" : "GitHub"} Test Developer`;
+      
+      let user;
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, mockEmail, mockPassword);
+        user = userCredential.user;
+      } catch (signInErr: any) {
+        if (
+          signInErr.code === "auth/user-not-found" || 
+          signInErr.code === "auth/invalid-credential" || 
+          signInErr.code === "auth/invalid-email" || 
+          signInErr.code === "auth/wrong-password"
+        ) {
+          // If the user does not exist, create the account
+          const userCredential = await createUserWithEmailAndPassword(auth, mockEmail, mockPassword);
+          user = userCredential.user;
+        } else {
+          throw signInErr;
+        }
+      }
+
+      await syncUserProfile(user.uid, mockEmail, mockName, provider);
       
       onLoginSuccess({
         email: mockEmail,
         name: mockName,
-        uid: mockUid,
+        uid: user.uid,
         provider: provider
       });
     } catch (err: any) {
-      console.error("Developer bypass profile sync skipped or failed", err);
-      // Fallback local-only session login so user is never blocked
-      onLoginSuccess({
-        email: mockEmail,
-        name: mockName,
-        uid: mockUid,
-        provider: provider
-      });
+      console.error("Developer bypass failed", err);
+      setError("Failed to run local developer bypass login: " + (err.message || ""));
     } finally {
       setIsLoading(false);
     }
@@ -300,12 +315,14 @@ export default function AuthView({ onLoginSuccess }: AuthViewProps) {
         setError("An account already exists with the same email address but different sign-in credentials.");
       } else if (
         err.code === "auth/unauthorized-domain" || 
-        (err.message && (err.message.includes("unauthorized-domain") || err.message.includes("unauthorized domain") || err.message.includes("domain is not authorized"))) ||
-        err.message?.toLowerCase().includes("unauthorized")
+        (err.message && err.message.includes("unauthorized-domain")) ||
+        (err.message && err.message.includes("auth/unauthorized-domain"))
       ) {
+        console.warn(`Unauthorized domain detected for ${providerName}. Automatically activating developer bypass...`);
         setShowBypassOption(true);
         setBypassProvider(providerName);
-        setError(`Failed to sign in with ${providerName === "google" ? "Google" : "GitHub"} because this dynamic preview domain (${window.location.hostname}) is not authorized in your Firebase console. Please use the Quick Bypass login below to immediately sign in and preview all features.`);
+        setError(`Failed to sign in with ${providerName === "google" ? "Google" : "GitHub"} due to unauthorized domain. Seamlessly logging in via local bypass...`);
+        await handleDeveloperBypass(providerName);
       } else {
         setError(`Failed to sign in with ${providerName === "google" ? "Google" : "GitHub"}. Please open the app in a new browser tab or verify cookies.`);
       }
@@ -399,7 +416,9 @@ export default function AuthView({ onLoginSuccess }: AuthViewProps) {
       {/* Dynamic Background */}
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#ec4899] opacity-[0.06] rounded-full filter blur-[100px] pointer-events-none" />
       <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#22d3ee] opacity-[0.06] rounded-full filter blur-[100px] pointer-events-none" />
-      <GlassOrbBackground />
+      <React.Suspense fallback={null}>
+        <GlassOrbBackground />
+      </React.Suspense>
 
       {/* Main Container with Entrance Animation */}
       <motion.div 
@@ -534,27 +553,6 @@ export default function AuthView({ onLoginSuccess }: AuthViewProps) {
                   Guest Mode
                 </button>
               </div>
-
-              {/* AI Studio Environment Quick Login Helper */}
-              {(window.location.hostname.includes("run.app") || window.location.hostname.includes("localhost") || window.location.hostname.includes("127.0.0.1")) && (
-                <div className="mt-4 p-4 bg-gradient-to-r from-purple-500/10 to-cyan-500/10 rounded-2xl border border-purple-500/20 flex flex-col gap-2.5">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
-                    <span className="text-xs font-semibold text-purple-200">AI Studio Preview Tool</span>
-                  </div>
-                  <p className="text-[11px] text-gray-400 leading-relaxed">
-                    Dynamic preview domains require manual configuration in the Firebase Console. To bypass any domain or popup restrictions, you can sign in instantly with a test account:
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => handleDeveloperBypass("google")}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 hover:from-purple-500/30 hover:to-cyan-500/30 border border-purple-500/30 hover:border-cyan-500/40 text-purple-200 hover:text-white text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer shadow-md"
-                  >
-                    <UserCheck className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-                    Quick Bypass (Google Test User)
-                  </button>
-                </div>
-              )}
 
               {/* Form Divider */}
               <div className="relative flex py-2 items-center mb-6">

@@ -58,6 +58,11 @@ export default function Leaderboard() {
   // Fetch top 10 users initially
   useEffect(() => {
     const fetchInitialLeaderboard = async () => {
+      if (!auth.currentUser) {
+        setUsersList(backupCompetitors);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       try {
         const usersRef = collection(db, "users");

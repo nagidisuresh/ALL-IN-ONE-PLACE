@@ -52,34 +52,38 @@ export default function DailyStreakChart() {
         let hasFirestoreData = false;
 
         // 2. Query Firestore 'progress' collection for active user if authenticated
-        if (user) {
-          const progressRef = collection(db, "progress");
-          const q = query(
-            progressRef, 
-            where("uid", "==", user.uid),
-            orderBy("date", "desc"),
-            limit(100)
-          );
-          
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            hasFirestoreData = true;
-            snap.forEach((doc) => {
-              const data = doc.data();
-              // Expecting data.date (string YYYY-MM-DD or Timestamp)
-              let dateStr = "";
-              if (data.date && typeof data.date === "string") {
-                dateStr = data.date.split("T")[0];
-              } else if (data.date && data.date.toDate) {
-                dateStr = data.date.toDate().toISOString().split("T")[0];
-              }
+        if (user && auth.currentUser) {
+          try {
+            const progressRef = collection(db, "progress");
+            const q = query(
+              progressRef, 
+              where("uid", "==", user.uid),
+              orderBy("date", "desc"),
+              limit(100)
+            );
+            
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+              hasFirestoreData = true;
+              snap.forEach((doc) => {
+                const data = doc.data();
+                // Expecting data.date (string YYYY-MM-DD or Timestamp)
+                let dateStr = "";
+                if (data.date && typeof data.date === "string") {
+                  dateStr = data.date.split("T")[0];
+                } else if (data.date && data.date.toDate) {
+                  dateStr = data.date.toDate().toISOString().split("T")[0];
+                }
 
-              if (dateStr && daysMap.has(dateStr)) {
-                const currentPoint = daysMap.get(dateStr)!;
-                currentPoint.xpEarned += (data.xpEarned ?? data.points ?? 30);
-                currentPoint.tasksDone += (data.tasksDone ?? 1);
-              }
-            });
+                if (dateStr && daysMap.has(dateStr)) {
+                  const currentPoint = daysMap.get(dateStr)!;
+                  currentPoint.xpEarned += (data.xpEarned ?? data.points ?? 30);
+                  currentPoint.tasksDone += (data.tasksDone ?? 1);
+                }
+              });
+            }
+          } catch (e) {
+            console.error("Failed to query progress from firestore:", e);
           }
         }
 

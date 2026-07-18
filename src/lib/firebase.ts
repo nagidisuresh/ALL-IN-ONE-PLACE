@@ -14,5 +14,5 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app, "ai-studio-nextroundprep-db8bcb77-b2dc-45fb-998d-1a42a8998e9d");
+export const db = getFirestore(app);
 export const storage = getStorage(app);

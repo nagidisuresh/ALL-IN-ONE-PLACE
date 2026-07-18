@@ -1,8 +1,8 @@
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
+import http from "http";
 import { GoogleGenAI, Type } from "@google/genai";
-import { createServer as createViteServer } from "vite";
 import { registerUser, authenticateUser, upsertOAuthUser, generateToken, verifyToken, getRedirectUri } from "./src/lib/auth";
 import {
   getFallbackQuestions,
@@ -1126,23 +1126,53 @@ Return ONLY a valid JSON object matching this schema:
 
 // Serve frontend assets using Vite in dev mode, static folder in production
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
+  const isProduction =
+    process.env.NODE_ENV === "production" ||
+    process.env.NODE_ENV === "prod" ||
+    (typeof __filename !== "undefined" && (__filename.endsWith(".cjs") || __filename.includes("dist")));
+
+  if (!isProduction) {
+    try {
+      const { createServer: createViteServer } = await import("vite");
+      const server = http.createServer(app);
+      const vite = await createViteServer({
+        server: {
+          middlewareMode: true,
+          hmr: {
+            server: server,
+            protocol: "wss",
+            clientPort: 443,
+          }
+        },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+
+      server.listen(PORT, "0.0.0.0", () => {
+        console.log(`NextRoundPrep Server running on port ${PORT} (dev mode with active HMR)`);
+      });
+    } catch (err) {
+      console.error("Failed to start Vite dev server, falling back to static server:", err);
+      const distPath = path.join(process.cwd(), "dist");
+      app.use(express.static(distPath));
+      app.get("*", (req, res) => {
+        res.sendFile(path.join(distPath, "index.html"));
+      });
+      app.listen(PORT, "0.0.0.0", () => {
+        console.log(`NextRoundPrep Server running on port ${PORT} (fallback production mode)`);
+      });
+    }
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
-  }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`NextRoundPrep Server running on port ${PORT}`);
-  });
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`NextRoundPrep Server running on port ${PORT} (production mode)`);
+    });
+  }
 }
 
 startServer();
